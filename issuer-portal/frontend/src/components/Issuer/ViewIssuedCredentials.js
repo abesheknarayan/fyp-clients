@@ -1,10 +1,10 @@
-import { useContext } from "react";
-import { userContext } from "../../context/UserContext";
+import { useContext,useEffect } from "react";
+import { issuerContext } from "../../context/IssuerContext";
 import { Redirect } from 'react-router-dom';
 
 // page to view all created credentials by issuer (only details like revocationId,witness,userId maybe stored)
 function ViewIssuedCredentials() {
-    const {isLoggedIn} = useContext(userContext)
+    const {isLoggedIn} = useContext(issuerContext)
     
     if(!isLoggedIn) return <Redirect to="/" />
 }

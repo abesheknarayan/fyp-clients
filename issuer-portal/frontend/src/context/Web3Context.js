@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import contract from "../contracts-build/SSI.json";
 import getWeb3 from "../web3";
-import { userContext } from "./UserContext";
+import { issuerContext } from "./IssuerContext";
 
 export const Web3Context = createContext();
 
@@ -9,9 +9,10 @@ function Web3ContextProvider(props) {
     const [web3, setWeb3] = useState(null);
     const [accounts, setAccounts] = useState(null);
     const [instance, setInstance] = useState(null);
-    const {user,saveUser} = useContext(userContext);
+    const {issuer,saveIssuer,isLoggedin} = useContext(issuerContext);
+    console.log(issuer)
 
-    async function web3Fetch() {
+    const web3Fetch = async() => {
         try {
             // only needed for issuer side 
             const web3Instance = await getWeb3();
@@ -22,12 +23,13 @@ function Web3ContextProvider(props) {
                 contract.abi,
                 deployedNetwork && deployedNetwork.address
             );
+            console.log(accounts)
             setInstance(instance);
             setWeb3(web3Instance);
             setAccounts(accounts);
-            saveUser && saveUser({
-                aadharID: user.aadharID,
-                userID: user.userID,
+            console.log(issuer,saveIssuer)
+            saveIssuer && saveIssuer({
+                userID: issuer.userID,
                 web3Address: accounts[0]
             })
         } catch (err) {
@@ -37,7 +39,7 @@ function Web3ContextProvider(props) {
 
     useEffect(() => {
         web3Fetch();
-    }, [user]);
+    }, []);
 
     return (
         <Web3Context.Provider value={{ web3, accounts, instance }}>

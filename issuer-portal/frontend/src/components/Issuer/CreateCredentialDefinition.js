@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import { userContext } from "../../context/UserContext";
+import { issuerContext } from "../../context/IssuerContext";
 import { Redirect } from 'react-router-dom';
 
 function CreateCredentialDefintion() {
-    const {isLoggedIn} = useContext(userContext)
+    const {isLoggedIn} = useContext(issuerContext)
     
     if(!isLoggedIn) return <Redirect to="/" />
 }

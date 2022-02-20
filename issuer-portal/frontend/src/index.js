@@ -6,13 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import { ChakraProvider, Spinner } from '@chakra-ui/react';
 
 ReactDOM.render(
-  <React.StrictMode>
     <Suspense fallback = {Spinner}>
       <ChakraProvider>
         <App />
       </ChakraProvider>
-    </Suspense>
-  </React.StrictMode>,
+    </Suspense>,
   document.getElementById('root')
 );
 

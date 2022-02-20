@@ -1,10 +1,10 @@
-import { useContext } from "react";
-import { userContext } from "../../context/UserContext";
+import { useContext,useEffect } from "react";
+import { issuerContext } from "../../context/IssuerContext";
 import { Redirect } from 'react-router-dom';
 
 // component to view single credential schema
 function ViewCredentialSchema() {
-    const {isLoggedIn} = useContext(userContext)
+    const {isLoggedIn} = useContext(issuerContext)
     
     if(!isLoggedIn) return <Redirect to="/" />
 }

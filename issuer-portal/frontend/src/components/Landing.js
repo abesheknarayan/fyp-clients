@@ -1,8 +1,7 @@
-import React, { useEffect } from "react"
+import React from "react"
 
 function Landing() {
-
-
+        
     return (
         <React.Fragment>
             <h1>Landing Page</h1>
