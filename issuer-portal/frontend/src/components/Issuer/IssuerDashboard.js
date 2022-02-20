@@ -12,6 +12,7 @@ function IssuerDashboard() {
 
     if (!isLoggedin) return <Redirect to="/auth/issuer/login" />
 
+
     return (
         <React.Fragment>
             <h1> Issuer dashboard  </h1>

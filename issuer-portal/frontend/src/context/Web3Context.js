@@ -36,6 +36,9 @@ function Web3ContextProvider(props) {
 
     useEffect(() => {
         web3Fetch();
+        // return function cleanup() {
+        //     setAccount(null);
+        // }
         
     }, [issuer]);
 

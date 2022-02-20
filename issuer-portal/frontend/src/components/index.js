@@ -12,7 +12,9 @@ import IssuerLogout from "./Issuer/IssuerLogout";
 
 // User Pages
 import UserLogin from "./UserLogin";
-import ViewAllCredentials from "./User/ViewAllCredentials";
+import UserDashboard from "./User/UserDashboard";
+import UserLogout from "./User/UserLogout";
+// import ViewAllCredentials from "./User/ViewAllCredentials";
 
 export {
     Landing,
@@ -25,8 +27,11 @@ export {
     ViewCredentialDefinitions,
     IssuerDashboard,
     IssuerLogout,
+    
 
     // user
     UserLogin,
-    ViewAllCredentials,
+    UserLogout,
+    // ViewAllCredentials,
+    UserDashboard,
 }

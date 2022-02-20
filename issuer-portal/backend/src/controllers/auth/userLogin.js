@@ -15,25 +15,32 @@ const userLoginHandler = async (req, res) => {
         const user = await User.findOne({ aadharId: aadharID })
 
         // console.log(user);
+        if(!user) res.status(400).send("bad credentials")
 
-        let passwordMatch = await bcrypt.compare(password,user.password);
-        // console.log(passwordMatch)
-        if (user && passwordMatch) {
+        let passwordMatch = await bcrypt.compare(password, user.password);
+        console.log(passwordMatch)
+        if (passwordMatch) {
             const token = jwt.sign(
                 {
                     userID: user.id
                 },
                 config.jwtSecret,
                 {
-                    expiresIn:"2h",
+                    expiresIn: "2h",
                 }
             );
+
             let resp = {
+                aadharID: user.aadharId,
                 userID: user.id,
-                token: token
             }
+            // console.log(resp)
             console.log("successfully logged in user! Sending back jwt")
-            return res.status(200).json(resp);
+            return res.cookie("access_token", token, {
+                httpOnly: true,
+                secure: false
+
+            }).status(200).json(resp);
         }
         res.status(400).send("bad credentials!!")
 
@@ -43,8 +50,15 @@ const userLoginHandler = async (req, res) => {
     }
 }
 
-const userLogoutHandler = () => {
-
+const userLogoutHandler = async (req,res) => {
+    try {
+        console.log("logout issuer called!!")
+        res.clearCookie("access_token")
+        return res.status(200).send("successfully logged out!!")
+    }
+    catch (err) {
+        console.error(err);
+    }
 }
 
 export {

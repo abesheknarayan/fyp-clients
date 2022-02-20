@@ -54,7 +54,7 @@ const issuerLoginHandler = async (req, res) => {
 
 const issuerLogoutHandler = (req,res) => {
     try {
-        console.log("logout user called!!")
+        console.log("logout issuer called!!")
         res.clearCookie("access_token")
         return res.status(200).send("successfully logged out!!")
     }

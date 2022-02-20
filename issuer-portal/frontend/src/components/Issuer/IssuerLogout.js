@@ -4,7 +4,7 @@ import { issuerContext } from "../../context/IssuerContext"
 
 function IssuerLogout(){
     const { logout } = useContext(issuerContext)    
-    console.log("in logout component")
+    console.log("in issuer logout component")
     logout();
 
     return <Redirect to="/" />
