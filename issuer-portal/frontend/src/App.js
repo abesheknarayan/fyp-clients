@@ -23,17 +23,17 @@ function App() {
           {/* Pages with issuer authentication (has Web3Context) */}
           <Route exact path={["/auth/issuer/logout", "/issuer/dashboard", "/auth/issuer/login", "/credentials/issued", "/credentialschema/all", "/credentialschema/create", "/credentialdefinition/all", "/credentialdefinition/create"]}>
             <IssuerContextProvider>
-              {/* <Web3ContextProvider> */}
-              <Route exact path="/auth/issuer/login" component={Components.IssuerLogin} />
-              <Route exact path="/auth/issuer/logout" component={Components.IssuerLogout} />
-              <Route exact path="/issuer/dashboard" component={Components.IssuerDashboard} />
-              <Route exact path="/credentials/issued" component={Components.ViewIssuedCredentials} />
-              <Route exact path="/credentialschema/all" component={Components.ViewCredentialSchemas} />
-              <Route exact path="/credentialschema/create" component={Components.CreateCredentialSchema} />
-              <Route exact path="/credentialdefinition/all" component={Components.ViewCredentialDefinitions} />
-              <Route exact path="/credentialdefinition/create" component={Components.CreateCredentialDefintion} />
-              {/* <Route path="/credentialdefintion/view/:id" component={} */}
-              {/* </Web3ContextProvider> */}
+              <Web3ContextProvider>
+                <Route exact path="/auth/issuer/login" component={Components.IssuerLogin} />
+                <Route exact path="/auth/issuer/logout" component={Components.IssuerLogout} />
+                <Route exact path="/issuer/dashboard" component={Components.IssuerDashboard} />
+                <Route exact path="/credentials/issued" component={Components.ViewIssuedCredentials} />
+                <Route exact path="/credentialschema/all" component={Components.ViewCredentialSchemas} />
+                <Route exact path="/credentialschema/create" component={Components.CreateCredentialSchema} />
+                <Route exact path="/credentialdefinition/all" component={Components.ViewCredentialDefinitions} />
+                <Route exact path="/credentialdefinition/create" component={Components.CreateCredentialDefintion} />
+                {/* <Route path="/credentialdefintion/view/:id" component={} */}
+              </Web3ContextProvider>
             </IssuerContextProvider>
           </Route>
         </Switch>
