@@ -12,10 +12,10 @@ import { commonContext } from './CommonContext';
 export const issuerContext = createContext();
 
 function IssuerContextProvider(props) {
-  const [issuer, setIssuer] = useState(null);
-  const [isLoggedin, setIsLoggedin] = useState(false);
-  const { isUserLoggedin, setIssuerLoginStatus } = useContext(commonContext)
-  console.log('in issuer context', isUserLoggedin)
+  const { isUserLoggedin, issuerData, isIssuerLoggedin, setIssuerLoginStatus } = useContext(commonContext)
+  const [issuer, setIssuer] = useState(issuerData);
+  const [isLoggedin, setIsLoggedin] = useState(isIssuerLoggedin);
+  console.log('in issuer context', isLoggedin, issuer, isUserLoggedin)
 
   const fetchIssuer = useCallback(async () => {
     try {
@@ -25,12 +25,16 @@ function IssuerContextProvider(props) {
       let resp = await axiosInstance.get('/issuer/me');
       // console.log(resp);
       if (resp.data) {
-        setIssuerLoginStatus(true)
+        setIssuerLoginStatus(true, resp.data)
         setIssuer(resp.data);
         setIsLoggedin(true);
+        return;
       }
+      setIssuerLoginStatus(false, null);
+      setIssuer(null);
+      setIsLoggedin(false);
     } catch (error) {
-      setIssuerLoginStatus(false);
+      setIssuerLoginStatus(false, issuer);
       setIsLoggedin(false);
       console.log(error);
     }
@@ -39,7 +43,7 @@ function IssuerContextProvider(props) {
   useEffect(() => {
     if (!isUserLoggedin) fetchIssuer();
     return function cleanup() {
-      setIssuerLoginStatus(false);
+      setIssuerLoginStatus(false, null);
       setIsLoggedin(false);
     }
   }, [fetchIssuer, isUserLoggedin]);
@@ -47,7 +51,7 @@ function IssuerContextProvider(props) {
   const saveIssuer = (issuer) => {
     console.log("saveIssuer called")
     console.log(issuer)
-    setIssuerLoginStatus(true);
+    setIssuerLoginStatus(true, issuer);
     setIssuer(issuer);
     setIsLoggedin(true);
   }
@@ -56,7 +60,7 @@ function IssuerContextProvider(props) {
     try {
       console.log('logging out issuer!')
       let res = await axiosInstance.get("/auth/issuer/logout")
-      setIssuerLoginStatus(false);
+      setIssuerLoginStatus(false, null);
       setIssuer(null);
       setIsLoggedin(false);
     }
@@ -64,6 +68,7 @@ function IssuerContextProvider(props) {
       console.error(err);
     }
   }
+
 
   return (
     <issuerContext.Provider value={{ issuer, isLoggedin, saveIssuer, logout }}>

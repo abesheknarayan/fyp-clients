@@ -1,7 +1,7 @@
 import Landing from "./Landing";
 
 // Issuer Pages
-import IssuerLogin from "./IssuerLogin";
+import IssuerLogin from "./Issuer/IssuerLogin";
 import ViewIssuedCredentials from "./Issuer/ViewIssuedCredentials";
 import CreateCredentialSchema from "./Issuer/CreateCredentialSchema";
 import CreateCredentialDefintion from "./Issuer/CreateCredentialDefinition";
@@ -11,7 +11,7 @@ import IssuerDashboard from "./Issuer/IssuerDashboard";
 import IssuerLogout from "./Issuer/IssuerLogout";
 
 // User Pages
-import UserLogin from "./UserLogin";
+import UserLogin from "./User/UserLogin";
 import UserDashboard from "./User/UserDashboard";
 import UserLogout from "./User/UserLogout";
 // import ViewAllCredentials from "./User/ViewAllCredentials";

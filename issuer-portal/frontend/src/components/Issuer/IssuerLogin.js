@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import { Button, Container, Input } from '@chakra-ui/react';
-import { axiosInstance } from "../utils/axios";
-import { issuerContext } from "../context/IssuerContext";
+import { axiosInstance } from "../../utils/axios";
+import { issuerContext } from "../../context/IssuerContext";
 import { Redirect, useHistory } from 'react-router-dom';
-import { commonContext } from "../context/CommonContext";
+import { commonContext } from "../../context/CommonContext";
 
 function IssuerLogin() {
     const history = useHistory()

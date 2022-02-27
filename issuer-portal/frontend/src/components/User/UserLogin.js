@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
-import { axiosInstance } from "../utils/axios";
+import { axiosInstance } from "../../utils/axios";
 import { Input, Container, Button } from "@chakra-ui/react";
-import { userContext } from "../context/UserContext";
+import { userContext } from "../../context/UserContext";
 import { Redirect, useHistory } from "react-router-dom";
-import { commonContext } from "../context/CommonContext";
+import { commonContext } from "../../context/CommonContext";
 
 function UserLogin() {
     const history = useHistory();

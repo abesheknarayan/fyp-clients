@@ -25,12 +25,12 @@ function UserContextProvider(props) {
             let resp = await axiosInstance.get('/user/me');
             // console.log(resp);
             if (resp.data) {
-                setUserLoginStatus(true);
+                setUserLoginStatus(true,resp.data);
                 setUser(resp.data);
                 setisLoggedin(true);
                 return;
             }
-            setUserLoginStatus(false);
+            setUserLoginStatus(false,null);
             setUser(null);
             setisLoggedin(false);
         } catch (error) {
