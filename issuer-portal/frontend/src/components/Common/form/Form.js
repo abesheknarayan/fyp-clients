@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Field from "./Field";
-import { Button, Input, useEditable } from '@chakra-ui/react';
+import { Button, Input, propNames, useEditable } from '@chakra-ui/react';
 
 // dynamic form used for attributes in creating credential schema
-function Form() {
+function Form(props) {
     const [fields, setFields] = useState([]);
     const [newAttribute, setNewAttribute] = useState('');
-    console.log("rendering");
 
 
     const setFieldWithIndex = (value, index) => {
@@ -28,6 +27,10 @@ function Form() {
     const removeFieldWithIndex = (index) => {
         setFields([...fields.slice(0, index), ...fields.slice(index + 1)]);
     }
+
+    useEffect(()=> {
+        props.setFieldAttributes(fields);
+    },[fields])
 
 
 

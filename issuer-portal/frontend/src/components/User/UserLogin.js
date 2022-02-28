@@ -1,9 +1,18 @@
 import React, { useContext, useState } from "react";
 import { axiosInstance } from "../../utils/axios";
-import { Input, Container, Button } from "@chakra-ui/react";
 import { userContext } from "../../context/UserContext";
 import { Redirect, useHistory } from "react-router-dom";
 import { commonContext } from "../../context/CommonContext";
+
+import {
+    Button, Container, Input,
+    Flex,
+    FormControl,
+    FormLabel,
+    Heading,    
+    Stack,
+} from "@chakra-ui/react";
+
 
 function UserLogin() {
     const history = useHistory();
@@ -48,11 +57,59 @@ function UserLogin() {
 
     return (
         <React.Fragment>
-            <Container centerContent>
-                <h1> User Login Page </h1>
-                <Input placeholder="aadhar id" size='md' value={aadhar} required onInput={handleChangeAadhar}></Input>
-                <Input placeholder="password" size='md' value={password} required type="password" onInput={handleChangePassword}></Input>
-                <Button onClick={handleSubmit}>Login</Button>
+                       <Container centerContent>
+                <Flex
+                    justify={'center'}
+                >
+                    <Stack
+                        padding="10"
+                        spacing={4}
+                        w={'full'}
+                        maxW={'md'}
+                        rounded={'xl'}
+                        boxShadow={'lg'}
+                        p={6}
+                        my={12}>
+                        <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
+                            User Login
+                        </Heading>
+                        <FormControl id="aadhar" isRequired>
+                            <FormLabel>Aadhar Id</FormLabel>
+                            <Input
+                                placeholder="Aadhar Id"
+                                _placeholder={{ color: 'gray.500' }}
+                                type="text"
+                                onInput={handleChangeAadhar}
+                            />
+                        </FormControl>
+                        <FormControl id="password" isRequired>
+                            <FormLabel>Password</FormLabel>
+                            <Input
+                                type="password"
+                                placeholder="Password"
+                                onInput={handleChangePassword}
+                                required
+                            />
+                        </FormControl>
+                        <Stack spacing={6}>
+                            <Button
+                                bg={'blue.400'}
+                                color={'white'}
+                                _hover={{
+                                    bg: 'blue.500',
+                                }}
+                                onClick={handleSubmit}
+                            >
+                                Login
+                            </Button>
+                            <Button variant={'link'} size='sm' colorScheme={'blue'} 
+                              onClick={()=>{history.push("/auth/issuer/login")}}
+                            > 
+                                Not an user? Login as Issuer
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </Flex>
             </Container>
         </React.Fragment>
     )
