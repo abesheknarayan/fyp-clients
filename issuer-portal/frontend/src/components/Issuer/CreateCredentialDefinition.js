@@ -3,6 +3,7 @@ import { issuerContext } from "../../context/IssuerContext";
 import { Redirect } from 'react-router-dom';
 import { commonContext } from "../../context/CommonContext";
 import Navbar from './Navbar';
+import Web3 from "web3";
 
 import {
     Button, Container, Input,
@@ -57,7 +58,10 @@ function CreateCredentialDefintion() {
         let val = definitionName.length && definitonVersion.length && definitionVerificationKey.length && schemaId.length;
         if (!val) return;
         try {
-            // await instance.methods.
+            console.log(definitionName,definitonVersion,Web3.utils.hexToAscii(definitionVerificationKey),Web3.utils.hexToAscii(schemaId),isRevocatable);
+            await instance.methods
+                  .createCredentialDefinitionSSI(definitionName,definitonVersion,(definitionVerificationKey),(schemaId),isRevocatable)
+                  .send({from: web3Account})
         }
         catch (err) {
             console.error(err);
