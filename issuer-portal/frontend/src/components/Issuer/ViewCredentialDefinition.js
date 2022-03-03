@@ -19,7 +19,7 @@ function ViewCredentialDefinition(props) {
             <Box padding='1' display='flex'> <Text> Verification Key: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.v_key} </Text> </Box>
             <Box padding='1' display='flex'> <Text> Schema Id: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.credSchema_id} </Text> </Box>
             <Box padding='1' display='flex'> <Text> Creator Address: </Text> <Text paddingLeft='1' color='tomato'  >  {props.value.issuer_address} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Revocatable </Text> <Text paddingLeft='1' color='tomato' >  {props.value.is_revocatable} </Text> </Box>
+            <Box padding='1' display='flex'> <Text> Revocatable: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.is_revocatable?"Yes":"No"} </Text> </Box>
         </Box>
     )
 

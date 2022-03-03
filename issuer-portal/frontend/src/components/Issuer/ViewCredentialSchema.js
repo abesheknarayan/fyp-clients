@@ -23,7 +23,7 @@ function ViewCredentialSchema(props) {
             <Text> Attributes  </Text>
             {
                 attributes.map((attribute, index) => (
-                    <div>
+                    <div key={index}>
                         <Box padding='1' display='flex'> <Text> Attribute {index + 1}:  </Text> <Text paddingLeft='1' color='tomato'> {attribute.value}  </Text> </Box>
                         <Box padding='1' display='flex'> <Text> Type:  </Text> <Text paddingLeft='1' color='tomato'> {attribute.type}  </Text> </Box>
                     </div>

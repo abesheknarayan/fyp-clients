@@ -1,10 +1,6 @@
-import React, { useContext, useState } from "react";
-import { issuerContext } from "../../context/IssuerContext";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Redirect } from 'react-router-dom';
-import { commonContext } from "../../context/CommonContext";
 import Navbar from './Navbar';
-import Web3 from "web3";
-
 import {
     Button, Container, Input,
     Flex,
@@ -15,19 +11,44 @@ import {
     Switch,
     Box,
 } from "@chakra-ui/react";
-import { Web3Context } from "../../context/Web3Context";
+import { generateKeyPair } from 'crypto'
 
+
+import { Web3Context } from "../../context/Web3Context";
+import { commonContext } from "../../context/CommonContext";
+import { genKeyPair } from '../../utils/crypto'
+import { config } from '../../config/config'
+import { axiosInstance } from "../../utils/axios";
 
 function CreateCredentialDefintion() {
 
     const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
     const { instance, web3Account } = useContext(Web3Context);
-
     const [definitionName, setDefintionName] = useState('');
     const [definitonVersion, setDefinitionVersion] = useState('');
-    const [definitionVerificationKey, setDefinitionVerificationKey] = useState('')
+    const [definitionVerificationKey, setDefinitionVerificationKey] = useState(null)
+    const [definitionSigningKey, setDefinitionSigningKey] = useState(null);
     const [schemaId, setSchemaId] = useState('');
     const [isRevocatable, setIsRevocatable] = useState(false);
+
+    useEffect(() => {
+        if(!isUserLoggedin && isIssuerLoggedin) generateKeyPair();
+    }, [])
+
+    const generateKeyPair = useCallback(async()=>{
+        try {
+            let keyPair = await genKeyPair();
+            console.log(keyPair)
+            console.log(keyPair.privateKey,keyPair.publicKey)
+            let formattedPublicKey = await window.crypto.subtle.exportKey('jwk',keyPair.publicKey);
+            let formattedPrivateKey = await window.crypto.subtle.exportKey('jwk',keyPair.privateKey);
+            setDefinitionSigningKey(formattedPrivateKey);
+            setDefinitionVerificationKey(formattedPublicKey);
+        }  
+        catch(err){
+            console.error(err);
+        }
+    })
 
     // not allowing simultaneous login
     if (isUserLoggedin) return <Redirect to="/user/dashboard" />
@@ -55,13 +76,26 @@ function CreateCredentialDefintion() {
     }
 
     const handleCreateDefinition = async () => {
-        let val = definitionName.length && definitonVersion.length && definitionVerificationKey.length && schemaId.length;
+        let val = definitionName.length && definitonVersion.length && definitionVerificationKey && schemaId.length;
         if (!val) return;
         try {
-            console.log(definitionName,definitonVersion,Web3.utils.hexToAscii(definitionVerificationKey),Web3.utils.hexToAscii(schemaId),isRevocatable);
-            await instance.methods
-                  .createCredentialDefinitionSSI(definitionName,definitonVersion,(definitionVerificationKey),(schemaId),isRevocatable)
-                  .send({from: web3Account})
+            // create some random primes
+            // get credential_definition id from response 
+            console.log(definitionVerificationKey.e,typeof definitionVerificationKey.n)
+            let resp = await instance.methods
+                .createCredentialDefinitionSSI(definitionName, definitonVersion,(definitionVerificationKey.e),definitionVerificationKey.n, (schemaId), isRevocatable)
+                .send({ from: web3Account })
+            console.log(resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id);
+
+            let credentialId = resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id;
+            console.log(credentialId);
+            await axiosInstance.post('/issuer/credentialdefinition/create',{
+                credentialId: credentialId,
+                publicKey: definitionVerificationKey,
+                privateKey: definitionSigningKey
+            })
+            // store (cred def id,key pair) tuple in mongodb for further use
+
         }
         catch (err) {
             console.error(err);
@@ -102,14 +136,6 @@ function CreateCredentialDefintion() {
                                 type="text"
                                 placeholder="version"
                                 onInput={handleVersionChange}
-                            />
-                        </FormControl>
-                        <FormControl id="vkey" isRequired>
-                            <FormLabel>Verification Key</FormLabel>
-                            <Input
-                                type="text"
-                                placeholder="Verification Key"
-                                onInput={handleVerificationKeyChange}
                             />
                         </FormControl>
                         <FormControl id="schemaid" isRequired>

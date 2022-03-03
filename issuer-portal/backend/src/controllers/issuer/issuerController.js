@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import Issuer from "../../models/issuer.js"
 import config from "../../config/config.js"
 import jwt from 'jsonwebtoken';
-import User from '../../models/user.js';
 import mongoose from 'mongoose';
 
 const createIssuer = async(username,password) => {
@@ -34,9 +33,9 @@ const getIssuer = async(req,res) => {
         req.userID = data.userID
         console.log(data.userID)
         let user = await Issuer.findById(mongoose.Types.ObjectId(data.userID))
-        console.log(user);
+        // console.log(user);
         if(!user) return res.status(401).send("access denied");
-        console.log("authorized user")
+        // console.log("authorized user")
         return res.status(200).json({
             username: user.username,
             userID: data.userID

@@ -22,7 +22,6 @@ function CreateCredentialSchema() {
     const [schemaVersion, setSchemaVersion] = useState('');
     const [attributes, setAttributes] = useState(null);
     const { instance, web3Account } = useContext(Web3Context);
-    console.log(instance, web3Account);
 
 
     // not allowing simultaneous login
