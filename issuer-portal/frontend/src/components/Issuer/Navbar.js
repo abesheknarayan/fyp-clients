@@ -22,7 +22,7 @@ import {
     ChevronRightIcon,
 } from '@chakra-ui/icons';
 
-import { Redirect, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 export default function WithSubnavigation() {
     const { isOpen, onToggle } = useDisclosure();

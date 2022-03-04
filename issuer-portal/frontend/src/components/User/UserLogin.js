@@ -18,7 +18,7 @@ function UserLogin() {
     const history = useHistory();
     const [aadhar, setAadhar] = useState('');
     const [password, setPassword] = useState('');
-    const { user, saveUser,isLoggedin } = useContext(userContext);
+    const { saveUser,isLoggedin } = useContext(userContext);
     const { isIssuerLoggedin,isUserLoggedin } = useContext(commonContext);
     console.log("in user login!!");
     console.log(isIssuerLoggedin,isLoggedin);

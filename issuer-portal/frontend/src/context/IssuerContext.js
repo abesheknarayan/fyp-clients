@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useContext,
 } from "react";
-import { Redirect } from 'react-router-dom';
 import { axiosInstance } from "../utils/axios";
 import { commonContext } from './CommonContext';
 
@@ -61,7 +60,7 @@ function IssuerContextProvider(props) {
   const logout = async () => {
     try {
       console.log('logging out issuer!')
-      let res = await axiosInstance.get("/auth/issuer/logout")
+      await axiosInstance.get("/auth/issuer/logout")
       setIssuerLoginStatus(false, null);
       setIssuer(null);
       setIsLoggedin(false);

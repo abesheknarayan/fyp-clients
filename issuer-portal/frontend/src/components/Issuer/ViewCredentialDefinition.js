@@ -1,5 +1,5 @@
-import { Box, Container, Text } from "@chakra-ui/react";
-import { useContext, useEffect } from "react";
+import { Box, Text } from "@chakra-ui/react";
+import { useContext } from "react";
 import { Redirect } from 'react-router-dom';
 import { commonContext } from "../../context/CommonContext";
 

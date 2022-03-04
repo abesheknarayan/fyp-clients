@@ -4,12 +4,8 @@ import {
     Box,
     Heading,
     Container,
-    Text,
     Button,
     Stack,
-    Icon,
-    useColorModeValue,
-    createIcon,
 } from '@chakra-ui/react';
 import { useHistory } from "react-router-dom";
 

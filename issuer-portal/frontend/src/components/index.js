@@ -17,6 +17,7 @@ import UserLogout from "./User/UserLogout";
 import ViewIssuableCredentials from "./User/ViewIssuableCredentials";
 import ViewIssuedCredentials from "./User/ViewIssuedCredential";
 import ViewRequestedCredentials from "./User/ViewRequestedCredentials";
+import ViewCredential from "./User/ViewCredential";
 
 export {
     Landing,
@@ -38,4 +39,5 @@ export {
     ViewIssuedCredentials,
     ViewIssuableCredentials,
     ViewRequestedCredentials,
+    ViewCredential,
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Redirect } from 'react-router-dom';
 import { commonContext } from "../../context/CommonContext";
 import { issuerContext } from "../../context/IssuerContext";
@@ -6,7 +6,7 @@ import { Web3Context } from "../../context/Web3Context";
 import Navbar from './Navbar'
 
 function IssuerDashboard() {
-    const { isLoggedin, issuer, fetchIssuer } = useContext(issuerContext);
+    const { isLoggedin, issuer } = useContext(issuerContext);
     const {isIssuerLoggedin,isUserLoggedin} = useContext(commonContext);
     const {web3Account} = useContext(Web3Context)
     console.log(isIssuerLoggedin,isUserLoggedin);

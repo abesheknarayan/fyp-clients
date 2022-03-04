@@ -1,10 +1,8 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { issuerContext } from "../../context/IssuerContext";
 import { Redirect } from 'react-router-dom';
 import { Web3Context } from "../../context/Web3Context";
 import { commonContext } from "../../context/CommonContext";
-import { Button, Container } from "@chakra-ui/react";
-import Web3 from "web3";
+import { Container } from "@chakra-ui/react";
 import ViewCredentialSchema from "./ViewCredentialSchema";
 import Navbar from "./Navbar";
 

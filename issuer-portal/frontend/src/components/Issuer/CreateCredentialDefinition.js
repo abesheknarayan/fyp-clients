@@ -11,13 +11,11 @@ import {
     Switch,
     Box,
 } from "@chakra-ui/react";
-import { generateKeyPair } from 'crypto'
 
 
 import { Web3Context } from "../../context/Web3Context";
 import { commonContext } from "../../context/CommonContext";
 import { genKeyPair } from '../../utils/crypto'
-import { config } from '../../config/config'
 import { axiosInstance } from "../../utils/axios";
 
 function CreateCredentialDefintion() {
@@ -63,9 +61,9 @@ function CreateCredentialDefintion() {
         setDefinitionVersion(e.target.value);
     }
 
-    const handleVerificationKeyChange = (e) => {
-        setDefinitionVerificationKey(e.target.value)
-    }
+    // const handleVerificationKeyChange = (e) => {
+    //     setDefinitionVerificationKey(e.target.value)
+    // }
 
     const handleSchemaIdChange = (e) => {
         setSchemaId(e.target.value);

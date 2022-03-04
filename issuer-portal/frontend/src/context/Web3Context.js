@@ -10,7 +10,7 @@ function Web3ContextProvider(props) {
     const [accounts, setAccounts] = useState(null);
     const [instance, setInstance] = useState(null);
     const [web3Account,setAccount] = useState(null);
-    const {issuer,saveIssuer,isLoggedin} = useContext(issuerContext);
+    const {issuer} = useContext(issuerContext);
 
     const web3Fetch = async() => {
         try {

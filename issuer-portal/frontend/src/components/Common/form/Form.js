@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Field from "./Field";
-import { Button, Input, propNames, useEditable } from '@chakra-ui/react';
+import { Button, Input } from '@chakra-ui/react';
 
 // dynamic form used for attributes in creating credential schema
 function Form(props) {

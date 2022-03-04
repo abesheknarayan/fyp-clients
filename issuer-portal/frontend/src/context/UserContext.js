@@ -5,7 +5,6 @@ import React, {
     useEffect,
     useContext,
 } from "react";
-import { Redirect } from 'react-router-dom';
 import { axiosInstance } from "../utils/axios";
 import { commonContext } from "./CommonContext";
 
@@ -59,7 +58,7 @@ function UserContextProvider(props) {
     const logout = async () => {
         try {
             console.log('logging out user!')
-            let res = await axiosInstance.get("/auth/user/logout")
+            await axiosInstance.get("/auth/user/logout")
             setUserLoginStatus(false,null);
             setUser(null);
             setisLoggedin(false);

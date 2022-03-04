@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Redirect } from 'react-router-dom';
 import {
     Button, Container, Input,
@@ -7,11 +7,9 @@ import {
     FormLabel,
     Heading,
     Stack,
-    useColorModeValue,
 } from "@chakra-ui/react";
 
 import { Web3Context } from "../../context/Web3Context";
-import { issuerContext } from "../../context/IssuerContext";
 import Form from "../Common/form/Form";
 import { commonContext } from "../../context/CommonContext";
 import Navbar from "./Navbar";
