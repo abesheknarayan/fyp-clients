@@ -20,7 +20,6 @@ function IssuerLogin() {
     const { saveIssuer, isLoggedin } = useContext(issuerContext)
     const { isUserLoggedin } = useContext(commonContext);
 
-    console.log(isUserLoggedin)
 
     // not allowing simultaneous login
     if (isUserLoggedin) return <Redirect to="/user/dashboard" />
@@ -40,7 +39,6 @@ function IssuerLogin() {
             // successfull login
             if (res.data && res.data.userID) {
                 console.log("successfull login!!")
-                console.log(saveIssuer)
                 saveIssuer(res.data)
                 history.push("/issuer/dashboard")
             }

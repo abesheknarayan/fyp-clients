@@ -12,9 +12,9 @@ import { commonContext } from "./CommonContext";
 export const userContext = createContext();
 
 function UserContextProvider(props) {
-    const [user, setUser] = useState(null);
-    const [isLoggedin, setisLoggedin] = useState(false);
-    const { isIssuerLoggedin, setUserLoginStatus } = useContext(commonContext);
+    const { isIssuerLoggedin, setUserLoginStatus,userData,isUserLoggedin } = useContext(commonContext);
+    const [user, setUser] = useState(userData);
+    const [isLoggedin, setisLoggedin] = useState(isUserLoggedin);
     console.log('in user context')
 
     const fetchUser = useCallback(async () => {
@@ -23,7 +23,7 @@ function UserContextProvider(props) {
             // returns back jwt and issuer details
             console.log("fetching user")
             let resp = await axiosInstance.get('/user/me');
-            // console.log(resp);
+            console.log(resp);
             if (resp.data) {
                 setUserLoginStatus(true,resp.data);
                 setUser(resp.data);
@@ -34,7 +34,7 @@ function UserContextProvider(props) {
             setUser(null);
             setisLoggedin(false);
         } catch (error) {
-            setUserLoginStatus(false);
+            setUserLoginStatus(false,user);
             setisLoggedin(false);
             console.log(error);
         }
@@ -43,15 +43,15 @@ function UserContextProvider(props) {
     useEffect(() => {
         if (!isIssuerLoggedin) fetchUser();
         return function cleanup() {
-            setUserLoginStatus(false);
+            setUserLoginStatus(false,user);
             setisLoggedin(false);
         }
     }, [fetchUser,isIssuerLoggedin]);
 
     const saveUser = (user) => {
-        console.log("saveUser called")
-        console.log(user)
-        setUserLoginStatus(true);
+        // console.log("saveUser called")
+        // console.log(user)
+        setUserLoginStatus(true,user);
         setUser(user);
         setisLoggedin(true);
     }
@@ -60,7 +60,7 @@ function UserContextProvider(props) {
         try {
             console.log('logging out user!')
             let res = await axiosInstance.get("/auth/user/logout")
-            setUserLoginStatus(false);
+            setUserLoginStatus(false,null);
             setUser(null);
             setisLoggedin(false);
         }

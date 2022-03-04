@@ -87,10 +87,15 @@ function CreateCredentialDefintion() {
                 .send({ from: web3Account })
             console.log(resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id);
 
-            let credentialId = resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id;
-            console.log(credentialId);
+            let definitionId = resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id;
+            console.log(definitionId);
             await axiosInstance.post('/issuer/credentialdefinition/create',{
-                credentialId: credentialId,
+                name:  definitionName,
+                credentialId: definitionId,
+                version: definitonVersion,
+                issuerAddress: web3Account,
+                schemaId: schemaId,
+                isRevocatable: isRevocatable,
                 publicKey: definitionVerificationKey,
                 privateKey: definitionSigningKey
             })

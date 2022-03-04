@@ -1,4 +1,5 @@
-import CredentialDef from '../../models/credentialDefintion.js'
+import CredentialDefinition from '../../models/credentialDefintion.js'
+import CredentialSchema from '../../models/credentialSchema.js'
 
 const createCredentialDefiniton = async (req,res) => {
     try {
@@ -6,10 +7,15 @@ const createCredentialDefiniton = async (req,res) => {
         if(!req.userID) {
             return res.status(401).send("access denied")
         }
-        let {userID,body} = req;
+        let {body} = req;
         // console.log(userID,body);
-        await CredentialDef.create({
+        await CredentialDefinition.create({
+            name: body.name,
             definitionId: body.credentialId,
+            version: body.version,
+            issuerAddress: body.issuerAddress,
+            schemaId: body.schemaId,
+            isRevocatable: body.isRevocatable,
             publicKey: body.publicKey,
             privateKey: body.privateKey 
         })
@@ -19,6 +25,31 @@ const createCredentialDefiniton = async (req,res) => {
     }
 }
 
+
+const createCredentialSchema = async(req,res) => {
+    try { 
+        console.log("attempting to create credential schema")
+        if(!req.userID) {
+            return res.status(401).send("access denied")
+        }
+        let {body} = req;
+        console.log(body)
+        
+        await CredentialSchema.create({
+            name: body.name,
+            schemaId: body.schemaId,
+            version: body.version,
+            creatorAddress: body.creatorAddress,
+            attributes: body.attributes
+        })
+    }
+    catch(err)
+    {
+        console.error(err);
+    }
+}
+
 export {
-    createCredentialDefiniton
+    createCredentialDefiniton,
+    createCredentialSchema,
 }

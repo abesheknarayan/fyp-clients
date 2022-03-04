@@ -1,11 +1,20 @@
-// import { useContext } from "react";
-// import { userContext } from "../../context/IssuerContext";
-// import { Redirect } from 'react-router-dom';
+import { useContext } from "react";
+import { Redirect } from 'react-router-dom';
+import { commonContext } from "../../context/CommonContext";
+commonContext
 
-// function ViewAllCredentials() {
-//     const {isLoggedIn} = useContext(userContext)
+
+function ViewAllCredentials() {
+    const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
+    console.log("rendering user dashboard")
+    console.log(isIssuerLoggedin, isUserLoggedin)
     
-//     if(!isLoggedIn) return <Redirect to="/" />
-// }
+    if(isIssuerLoggedin) 
+        return <Redirect to="/issuer/dashboard" />
 
-// export default ViewAllCredentials;
+    if (!isUserLoggedin)
+        return <Redirect to="/auth/user/login" />
+
+}
+
+export default ViewAllCredentials;

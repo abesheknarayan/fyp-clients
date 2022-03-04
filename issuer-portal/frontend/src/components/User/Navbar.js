@@ -240,35 +240,24 @@ const MobileNavItem = ({ label, children, href }) => {
 const NAV_ITEMS = [
     {
         label: 'Dashboard',
-        href: '/issuer/dashboard'
+        href: '/user/dashboard'
     },
     {
-        label: 'Credential Schema',
-        children: [
-            {
-                label: 'Create',
-                subLabel: 'Create credential schema',
-                href: '/credentialschema/create',
-            },
-            {
-                label: 'View',
-                subLabel: 'View all your credential schemas',
-                href: '/credentialschema/all',
-            },
-        ],
+        label: 'Issuable Credentials',
+        href: '/user/credentials/view'
     },
     {
-        label: 'Credential Definition',
+        label: 'Credentials',
         children: [
             {
-                label: 'Create',
-                subLabel: 'Create credential definition',
-                href: '/credentialdefinition/create',
+                label: 'Requested',
+                subLabel: 'View pending requests',
+                href: '/user/credentials/requested',
             },
             {
-                label: 'View',
-                subLabel: 'View all your credential definitions',
-                href: '/credentialdefinition/all',
+                label: 'Issued',
+                subLabel: 'View Issued',
+                href: '/user/credentials/issued',
             },
         ],
     },

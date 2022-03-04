@@ -13,6 +13,7 @@ function CommonContextProvider(props) {
     const setIssuerLoginStatus = (val,issuer) => {
         setIsIssuerLoggedin(val)
         setIssuer(issuer)
+        console.log("setting issuer to localstorage",val,issuer);
         if (val) {
             localStorage.setItem("issuerLoginStatus", val);
             localStorage.setItem("issuer",issuer);

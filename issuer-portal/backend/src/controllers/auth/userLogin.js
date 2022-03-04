@@ -34,7 +34,7 @@ const userLoginHandler = async (req, res) => {
                 aadharID: user.aadharId,
                 userID: user.id,
             }
-            // console.log(resp)
+            console.log(resp)
             console.log("successfully logged in user! Sending back jwt")
             return res.cookie("access_token", token, {
                 httpOnly: true,
@@ -42,7 +42,7 @@ const userLoginHandler = async (req, res) => {
 
             }).status(200).json(resp);
         }
-        res.status(400).send("bad credentials!!")
+        return res.status(400).send("bad credentials!!")
 
     }
     catch (err) {

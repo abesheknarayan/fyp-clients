@@ -19,13 +19,14 @@ function UserLogin() {
     const [aadhar, setAadhar] = useState('');
     const [password, setPassword] = useState('');
     const { user, saveUser,isLoggedin } = useContext(userContext);
-    const { isIssuerLoggedin } = useContext(commonContext);
+    const { isIssuerLoggedin,isUserLoggedin } = useContext(commonContext);
     console.log("in user login!!");
     console.log(isIssuerLoggedin,isLoggedin);
 
     if(isIssuerLoggedin) return <Redirect to="/issuer/dashboard" />
 
     if(isLoggedin) return <Redirect to="/user/dashboard" />
+
     const handleSubmit = async () => {
         try {
             if (!(aadhar && password)) {

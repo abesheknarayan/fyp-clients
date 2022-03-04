@@ -15,6 +15,7 @@ import { issuerContext } from "../../context/IssuerContext";
 import Form from "../Common/form/Form";
 import { commonContext } from "../../context/CommonContext";
 import Navbar from "./Navbar";
+import { axiosInstance } from "../../utils/axios";
 
 function CreateCredentialSchema() {
     const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
@@ -46,9 +47,19 @@ function CreateCredentialSchema() {
         try {
             let stringifiedAttributes = JSON.stringify(attributes);
             console.log(stringifiedAttributes, typeof stringifiedAttributes)
-            await instance.methods
+            let resp = await instance.methods
                 .createCredentialSchemaSSI(schemaName, schemaVersion, stringifiedAttributes)
                 .send({ from: web3Account })
+            
+            let schemaId = resp.events.SendCredentialSchemaId.returnValues._credential_schema_id;
+            console.log(schemaId);
+            await axiosInstance.post("/issuer/credentialschema/create",{
+                name: schemaName,
+                schemaId: schemaId,
+                version: schemaVersion,
+                creatorAddress: web3Account,
+                attributes: stringifiedAttributes
+            })
         }
         catch (err) {
             console.error(err);

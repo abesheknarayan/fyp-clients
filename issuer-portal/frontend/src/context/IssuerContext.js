@@ -23,12 +23,14 @@ function IssuerContextProvider(props) {
       // returns back jwt and issuer details
       console.log("fetching issuer")
       let resp = await axiosInstance.get('/issuer/me');
-      // console.log(resp);
+      console.log(resp);
       if (resp.data) {
+        console.log("here 22")
         setIssuerLoginStatus(true, resp.data)
         setIssuer(resp.data);
         setIsLoggedin(true);
         return;
+        
       }
       setIssuerLoginStatus(false, null);
       setIssuer(null);
@@ -36,21 +38,21 @@ function IssuerContextProvider(props) {
     } catch (error) {
       setIssuerLoginStatus(false, issuer);
       setIsLoggedin(false);
-      console.log(error);
+      console.error(error);
     }
   }, []);
 
   useEffect(() => {
     if (!isUserLoggedin) fetchIssuer();
     return function cleanup() {
-      setIssuerLoginStatus(false, null);
+      setIssuerLoginStatus(false, issuer);
       setIsLoggedin(false);
     }
   }, [fetchIssuer, isUserLoggedin]);
 
   const saveIssuer = (issuer) => {
-    // console.log("saveIssuer called")
-    // console.log(issuer)
+    console.log("saveIssuer called")
+    console.log(issuer)
     setIssuerLoginStatus(true, issuer);
     setIssuer(issuer);
     setIsLoggedin(true);
