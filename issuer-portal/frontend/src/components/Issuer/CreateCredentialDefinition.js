@@ -36,10 +36,9 @@ function CreateCredentialDefintion() {
     const generateKeyPair = useCallback(async()=>{
         try {
             let keyPair = await genKeyPair();
-            console.log(keyPair)
-            console.log(keyPair.privateKey,keyPair.publicKey)
             let formattedPublicKey = await window.crypto.subtle.exportKey('jwk',keyPair.publicKey);
             let formattedPrivateKey = await window.crypto.subtle.exportKey('jwk',keyPair.privateKey);
+            console.log(formattedPublicKey,formattedPrivateKey)
             setDefinitionSigningKey(formattedPrivateKey);
             setDefinitionVerificationKey(formattedPublicKey);
         }  
@@ -81,7 +80,7 @@ function CreateCredentialDefintion() {
             // get credential_definition id from response 
             console.log(definitionVerificationKey.e,typeof definitionVerificationKey.n)
             let resp = await instance.methods
-                .createCredentialDefinitionSSI(definitionName, definitonVersion,(definitionVerificationKey.e),definitionVerificationKey.n, (schemaId), isRevocatable)
+                .createCredentialDefinitionSSI(definitionName, definitonVersion,{curve:definitionVerificationKey.crv,x:definitionVerificationKey.x,y:definitionVerificationKey.y}, (schemaId), isRevocatable)
                 .send({ from: web3Account })
             console.log(resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id);
 

@@ -6,6 +6,7 @@ import config from './config/config.js'
 import IssuerRoute from './routes/issuerRoute.js'
 import AuthRoute from './routes/authRoute.js'
 import UserRoute from './routes/userRoute.js'
+import CredentialRoute from './routes/credRoute.js'
 import database from './utils/db.js'
 
 const app = express()
@@ -31,6 +32,7 @@ app.use(cors({
 app.use('/auth',AuthRoute)
 app.use('/issuer',IssuerRoute)
 app.use('/user',UserRoute)
+app.use('/credential',CredentialRoute)
 
 
 app.get("/",(req,res)=>{

@@ -13,7 +13,7 @@ import {
     Th,
     Td,
     TableCaption,
-  } from '@chakra-ui/react'
+} from '@chakra-ui/react'
 
 function ViewIssuableCredentials() {
     const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
@@ -25,10 +25,10 @@ function ViewIssuableCredentials() {
 
     const fetchIssuableCredentials = useCallback(async () => {
         try {
-           let res = await axiosInstance.get("/user/credentials/issuable")
-           setIssuableCredentials(res.data);
+            let res = await axiosInstance.get("/user/credentials/issuable")
+            setIssuableCredentials(res.data);
         }
-        catch(err) {
+        catch (err) {
             console.error(err);
         }
     })
@@ -49,38 +49,38 @@ function ViewIssuableCredentials() {
 
     const handleViewCredential = (e) => {
         history.push(`/user/credential/view/${e.target.id}`)
-    }    
+    }
 
     return (
         <React.Fragment >
             <Navbar />
             <Container >
                 <Table variant='simple'>
-  <TableCaption>Credentials Issued by Issuer</TableCaption>
-  <Thead>
-    <Tr>
-      <Th>Credential </Th>
-      <Th>Version</Th>
-    </Tr>
-  </Thead>
-  <Tbody>
-        {
-            credentials.map((cred,index)=> {
-                return(
-                    <Tr key={index} >
-                        <Td >{cred.name}</Td>
-                        <Td>{cred.version}</Td>
-                        <Td>
-                            <Button id={cred._id} onClick={handleViewCredential}>View</Button>
-                        </Td>
-                    </Tr>
-                )
-            })
-   
-        }
-  </Tbody>
+                    <TableCaption>Credentials Issued by Issuer</TableCaption>
+                    <Thead>
+                        <Tr>
+                            <Th>Credential </Th>
+                            <Th>Version</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+                        {
+                            credentials.map((cred, index) => {
+                                return (
+                                    <Tr key={index} >
+                                        <Td >{cred.name}</Td>
+                                        <Td>{cred.version}</Td>
+                                        <Td>
+                                            <Button id={cred._id} onClick={handleViewCredential}>View</Button>
+                                        </Td>
+                                    </Tr>
+                                )
+                            })
 
-</Table>
+                        }
+                    </Tbody>
+
+                </Table>
             </Container>
         </React.Fragment>
     )

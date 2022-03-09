@@ -9,6 +9,8 @@ import ViewCredentialSchemas from "./Issuer/ViewCredentialSchemas";
 import ViewCredentialDefinitions from "./Issuer/ViewCredentialDefinitions";
 import IssuerDashboard from "./Issuer/IssuerDashboard";
 import IssuerLogout from "./Issuer/IssuerLogout";
+import ViewCredentialRequests from "./Issuer/ViewCredentialRequests";
+import IssueCredential from "./Issuer/IssueCredential";
 
 // User Pages
 import UserLogin from "./User/UserLogin";
@@ -30,7 +32,8 @@ export {
     ViewIssuedCredentialsIssuer,
     IssuerDashboard,
     IssuerLogout,
-    
+    ViewCredentialRequests,
+    IssueCredential,
     
     // user
     UserLogin,

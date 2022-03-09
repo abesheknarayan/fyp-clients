@@ -272,4 +272,19 @@ const NAV_ITEMS = [
             },
         ],
     },
+    {
+        label: 'Credentials',
+        children: [
+            {
+                label: 'Requests',
+                subLabel: 'View all credential requests',
+                href: '/credential/requests' 
+            },
+            {
+                label: 'View',
+                subLabel: 'View all issued credentials',
+                href: '/credential/issued'
+            }
+        ]
+    }
 ];

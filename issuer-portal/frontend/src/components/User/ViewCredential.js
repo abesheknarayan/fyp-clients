@@ -51,6 +51,19 @@ function ViewCredential() {
     if (!isUserLoggedin)
         return <Redirect to="/auth/user/login" />
     
+    
+    const handleRequestSubmit = async() => {
+        try{
+            await axiosInstance.post(`/credential/request`,{
+                definitionId: credentialDefinitionDBId
+            }); 
+
+        }
+        catch(err)
+        {
+            console.error(err);
+        }
+    }
 
     return (
         <React.Fragment >
@@ -84,16 +97,16 @@ function ViewCredential() {
                         <Text fontSize={'xl'} margin={'10'} > Attributes </Text>
                         <Table variant='simple'>
                             <Tbody>
-                                {JSON.parse(credential.schema.attributes).map((attribute)=>{
+                                {JSON.parse(credential.schema.attributes).map((attribute,index)=>{
                                     return (
-                                        <Tr>
+                                        <Tr key={index}>
                                             <Td> {attribute.value} </Td>
                                         </Tr>
                                     )
                                 })}
                             </Tbody>
                         </Table>
-                        <Button margin={'10'} colorScheme={'blue'}>Request Credential</Button>
+                        <Button margin={'10'} colorScheme={'blue'} onClick={handleRequestSubmit}>Request Credential</Button>
                     </Container>
                 )
             }
