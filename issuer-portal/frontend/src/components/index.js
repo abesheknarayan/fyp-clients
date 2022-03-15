@@ -17,9 +17,10 @@ import UserLogin from "./User/UserLogin";
 import UserDashboard from "./User/UserDashboard";
 import UserLogout from "./User/UserLogout";
 import ViewIssuableCredentials from "./User/ViewIssuableCredentials";
-import ViewIssuedCredentials from "./User/ViewIssuedCredential";
+import ViewIssuedCredentials from "./User/ViewIssuedCredentials";
 import ViewRequestedCredentials from "./User/ViewRequestedCredentials";
 import ViewCredential from "./User/ViewCredential";
+import ViewIssuedCredential from "./User/ViewIssuedCredential";
 
 export {
     Landing,
@@ -28,7 +29,7 @@ export {
     CreateCredentialSchema,
     CreateCredentialDefintion,
     ViewCredentialSchemas,
-    ViewCredentialDefinitions,
+    ViewCredentialDefinitions,  
     ViewIssuedCredentialsIssuer,
     IssuerDashboard,
     IssuerLogout,
@@ -43,4 +44,5 @@ export {
     ViewIssuableCredentials,
     ViewRequestedCredentials,
     ViewCredential,
+    ViewIssuedCredential,
 }

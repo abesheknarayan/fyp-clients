@@ -15,6 +15,7 @@ function App() {
           <Route exact path='/credential/link/:id' component={Components.LinkCredential} />
           <Route exact path='/credential/link' component={Components.LinkCredentials} />
           <Route exact path='/credential/all' component={Components.ViewAllCredentials} />
+          <Route exact path="/credential/view/:id" component={Components.ViewCredential} />
         </Switch>
       </Router>
     </React.Fragment>

@@ -7,6 +7,7 @@ const CredentialRequestSchema = new mongoose.Schema({
     credentialVersion: String,
     aadharId: String,
     status: String,
+    publicKey: {},
 })
 
 const CredentialRequest = mongoose.model("CredentialRequests",CredentialRequestSchema);

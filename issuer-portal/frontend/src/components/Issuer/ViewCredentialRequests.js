@@ -1,4 +1,4 @@
-import { Container,Button,Table ,Th, Tr,Td, Tbody, Thead } from "@chakra-ui/react";
+import { Container, Button, Table, Th, Tr, Td, Tbody, Thead, Heading } from "@chakra-ui/react";
 import { commonContext } from "../../context/CommonContext";
 import { Redirect, useHistory } from "react-router-dom";
 import React, { useCallback, useContext, useEffect, useState } from "react";
@@ -34,14 +34,14 @@ function ViewCredentialRequests() {
     if (!isIssuerLoggedin) return <Redirect to="/auth/issuer/login" />
 
     const handleIssueCredential = (e) => {
-        history.push(`/credential/issue/${e.target.id}`);   
+        history.push(`/credential/issue/${e.target.id}`);
     }
 
     return (
         <React.Fragment>
             <Navbar />
             <Container>
-                <Table variant='simple'>
+                {requests.length > 0 && (<Table variant='simple'>
                     <Thead>
                         <Tr>
                             <Th>
@@ -57,8 +57,8 @@ function ViewCredentialRequests() {
                     </Thead>
                     <Tbody>
                         {
-                            requests.map((request,index)=>{
-                                return(
+                            requests.map((request, index) => {
+                                return (
                                     <Tr key={index}>
                                         <Td> {request.credentialName} </Td>
                                         <Td> {request.credentialVersion} </Td>
@@ -69,7 +69,12 @@ function ViewCredentialRequests() {
                             })
                         }
                     </Tbody>
-                </Table>
+                </Table>)}
+                {
+                    !requests.length > 0 && (
+                        <Heading size={'lg'} margin={'10'}>No Credential Requests !!</Heading>
+                    )
+                }
             </Container>
         </React.Fragment>
     )

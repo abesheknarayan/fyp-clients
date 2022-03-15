@@ -32,7 +32,8 @@ function Landing() {
                             spacing={3}
                             align={'center'}
                             alignSelf={'center'}
-                            position={'relative'}>
+                            position={'relative'}
+                            >
                             <Button
                                 colorScheme={'green'}
                                 bg={'green.400'}

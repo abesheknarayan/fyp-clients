@@ -1,9 +1,9 @@
 import { Container, FormLabel, Tbody, Table, Tr, Td, Text, Heading, Flex, Stack, FormControl, Input, Button } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Redirect, useLocation } from "react-router-dom";
+import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { commonContext } from "../../context/CommonContext";
 import { axiosInstance } from "../../utils/axios";
-import { Sign,VerifySignature,ConvertArrayBuffertoHexString, ConvertHexStringtoArrayBuffer } from "../../utils/crypto";
+import { Sign, VerifySignature, ConvertArrayBuffertoHexString, ConvertHexStringtoArrayBuffer, encryptWithPublicKey } from "../../utils/crypto";
 import Navbar from './Navbar';
 
 
@@ -40,6 +40,7 @@ function IssueCredential() {
     const [credential, setCredential] = useState(null);
     const [credentialFillableDetails, setCredentialFillableDetails] = useState({});
     const path = useLocation();
+    const history = useHistory();
     let credentialDefinitionDBId = path.pathname.split("/").slice(-1)[0];
     console.log(credentialDefinitionDBId)
     console.log("rendering issue credentials component");
@@ -53,6 +54,7 @@ function IssueCredential() {
         }
         catch (err) {
             console.error(err);
+            history.push("/credential/requests")
         }
     })
 
@@ -78,19 +80,38 @@ function IssueCredential() {
     // big shit , sign each attribute and store it in db
     // TODO: Encrypt the whole data with pub key of requested user
     const handleIssueCredential = async () => {
-        console.log(credentialFillableDetails);
-        let {publicKey,privateKey} = credential.definition;
-        console.log(privateKey,publicKey);
-        for(let [key,value] of Object.entries(credentialFillableDetails)) {
-            // console.log(key,value);
-            let encoder = new TextEncoder();
-            let encodedDetail = encoder.encode(value);
-            let signature = await Sign(encodedDetail,privateKey);
-            console.log(signature);
-            console.log(ConvertHexStringtoArrayBuffer(signature))
-            // let verify = await VerifySignature(encodedDetail,signature,publicKey);
+        try {
+            console.log(credentialFillableDetails);
+            const { publicKey, privateKey } = credential.definition;
+            const { userPublicKey } = credential;
+            let newCredential = {};
+            // metadata
+            newCredential['name'] = credential.definition.name;
+            newCredential['version'] = credential.definition.version;
+            newCredential.attributes = []
+            // encrypting credential's value using user Public key
+            for (let [key, value] of Object.entries(credentialFillableDetails)) {
+                let encoder = new TextEncoder();
+                let encodedDetail = encoder.encode(value);
+                let signature = await Sign(encodedDetail, privateKey);
+                let encryptedValue = await encryptWithPublicKey(userPublicKey, value);
+                newCredential.attributes.push({
+                    attributeName: key,
+                    value: encryptedValue,
+                    signature: signature,
+                })
+            }
+            // store credential in db 
+            await axiosInstance.post('/credential/save',{
+                requestId: credential.requestId,
+                credentialDefinitionDBId: credentialDefinitionDBId,
+                credential: newCredential,
+            })
         }
-        // console.log(publicKey);
+        catch(err)
+        {
+            console.error(err);
+        }
     }
 
     return (

@@ -19,7 +19,7 @@ import { db } from "../utils/db";
 function CreateCredential() {
     const [credentialName, setCredentialName] = useState('');
     const [key, setKey] = useState(null);
-    const { hasCopied, onCopy } = useClipboard(key);
+    const { hasCopied, onCopy } = useClipboard(key?key.encodedPublicKey:null);
     const history = useHistory();
 
     const handleChangeCredentialName = (e) => {
@@ -51,7 +51,7 @@ function CreateCredential() {
                 credentialName: credentialName,
                 publicKey: key.json.publicKey,
                 privateKey: key.json.privateKey,
-                used:false,
+                used:0,
             })
         }
         catch (err) {

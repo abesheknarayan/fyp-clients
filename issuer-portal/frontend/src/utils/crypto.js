@@ -91,27 +91,62 @@ const VerifySignature = async (encodedMessage, signature, jwk) => {
     }
 }
 
-const ConvertHexStringtoArrayBuffer = (hex) => {
-    try{
-       return new Int8Array(hex.match(/.{1,2}/g).map(byte=> parseInt(byte,16)))
+const encryptWithPublicKey = async (publicKey, value) => {
+    try {
+        // import public key
+        let importedPublicKey = await window.crypto.subtle.importKey(
+            'jwk',
+            publicKey,
+            {
+                name: 'RSA-OAEP',
+                hash: 'SHA-256',
+            },
+            true,
+            ['encrypt']
+        )
+        // encode value
+        let stringifiedCredential = JSON.stringify(value);
+        let encoder = new TextEncoder();
+        let encodedCredential = encoder.encode(stringifiedCredential);
+        let result = await window.crypto.subtle.encrypt(    
+            {
+                name: 'RSA-OAEP',
+                hash: 'SHA-256',
+            },
+            importedPublicKey,
+            encodedCredential
+        )
+        let int8Array = new Int8Array(result); 
+        return ConvertArrayBuffertoHexString(int8Array);        
     }
-    catch(err)
-    {
+    catch (err) {
         console.error(err);
     }
 }
 
-function ConvertArrayBuffertoHexString(byteArray) {
+const ConvertHexStringtoArrayBuffer = (hex) => {
+    try {
+        return new Int8Array(hex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)))
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+
+const ConvertArrayBuffertoHexString = (byteArray) => {
     return Array.from(byteArray, function (byte) {
         return ('0' + (byte & 0xFF).toString(16)).slice(-2);
     }).join('')
 }
 
 
+
 export {
     genKeyPair,
     Sign,
     VerifySignature,
+    encryptWithPublicKey,
     ConvertArrayBuffertoHexString,
     ConvertHexStringtoArrayBuffer,
+
 }

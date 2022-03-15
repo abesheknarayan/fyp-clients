@@ -6,8 +6,6 @@ commonContext
 
 function ViewAllCredentials() {
     const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
-    console.log("rendering user dashboard")
-    console.log(isIssuerLoggedin, isUserLoggedin)
     
     if(isIssuerLoggedin) 
         return <Redirect to="/issuer/dashboard" />

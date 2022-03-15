@@ -30,7 +30,8 @@ function App() {
     "/user/credentials/view",
     "/user/credentials/requested",
     "/user/credentials/issued",
-    "/user/credential/view/:id"
+    "/user/credential/view/:id",
+    "/credential/issued/view/:id",
   ]
 
   return (
@@ -53,6 +54,7 @@ function App() {
                 <Route exact path="/user/dashboard" component={Components.UserDashboard} />
                 <Route exact path="/user/credentials/view" component={Components.ViewIssuableCredentials}  />
                 <Route exact path="/user/credentials/requested" component={Components.ViewRequestedCredentials} />
+                <Route exact path="/credential/issued/view/:id" component={Components.ViewIssuedCredential} />
                 <Route exact path ="/user/credentials/issued" component={Components.ViewIssuedCredentials} />
               </UserContextProvider>
             </Route>

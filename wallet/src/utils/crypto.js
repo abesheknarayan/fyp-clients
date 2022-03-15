@@ -58,19 +58,32 @@ function ConvertArrayBuffertoHexString(byteArray) {
 
 const decrypt = async(privateKey,cipherText) => {
     try{
+        let importedPrivateKey = await window.crypto.subtle.importKey(
+            'jwk',
+            privateKey,
+            {
+                name: 'RSA-OAEP',
+                hash: 'SHA-256',
+            },
+            true,
+            ['decrypt']
+        )
+        // cipher text is in hex form ==> change it to array buffer
+        let cipherTextBuffer = ConvertHexStringtoArrayBuffer(cipherText);
         let result = await window.crypto.subtle.decrypt(
             {
-                name: 'RSA-OAEP'
+                name: 'RSA-OAEP',
+
             },
-            privateKey,
-            cipherText,
+            importedPrivateKey,
+            cipherTextBuffer,
         )
-        console.log(JSON.parse(result));
-        return result;
+        let decoder = new TextDecoder();
+        return decoder.decode(result);
     }
     catch(err)
     {
-        console.log(err);
+        console.error(err);
     }
 
 }
@@ -80,5 +93,6 @@ export {
     getKeyMaterial,
     deriveKey,
     ConvertArrayBuffertoHexString,
+    ConvertHexStringtoArrayBuffer,
     decrypt,
 }

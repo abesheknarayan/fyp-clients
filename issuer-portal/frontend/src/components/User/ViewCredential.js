@@ -1,20 +1,18 @@
 import {
     Container, Text,
     Table,
-    Thead,
     Tbody,
-    Tfoot,
     Tr,
-    Th,
     Td,
-    TableCaption,
-    Box,
     Button,
+    Input,
+    FormLabel,
 } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 import { commonContext } from "../../context/CommonContext";
 import { axiosInstance } from "../../utils/axios";
+import { ConvertHexStringtoArrayBuffer } from "../../utils/crypto";
 import Navbar from './Navbar'
 
 
@@ -22,7 +20,8 @@ import Navbar from './Navbar'
 function ViewCredential() {
     const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
     const path = useLocation();
-    const [credential, setCredential] = useState(null)
+    const [credential, setCredential] = useState(null);
+    const [encodedPublicKey,setEncodedPublicKey] = useState('');
     let credentialDefinitionDBId = path.pathname.split("/").slice(-1)[0];
     console.log(credentialDefinitionDBId)
 
@@ -54,8 +53,14 @@ function ViewCredential() {
     
     const handleRequestSubmit = async() => {
         try{
+            // TODO: Decode public key
+            let publicKeyBuffer = ConvertHexStringtoArrayBuffer(encodedPublicKey);
+            let decoder = new TextDecoder();
+            let decodedPublicKey = decoder.decode(publicKeyBuffer);
+            let decodedPublicKeyObject = JSON.parse(decodedPublicKey);
             await axiosInstance.post(`/credential/request`,{
-                definitionId: credentialDefinitionDBId
+                definitionId: credentialDefinitionDBId,
+                publicKey: decodedPublicKeyObject,
             }); 
 
         }
@@ -63,6 +68,10 @@ function ViewCredential() {
         {
             console.error(err);
         }
+    }
+
+    const handleEncodedPublicKeyChange = (e) => {
+        setEncodedPublicKey(e.target.value);
     }
 
     return (
@@ -106,6 +115,8 @@ function ViewCredential() {
                                 })}
                             </Tbody>
                         </Table>
+                        <Text fontSize={'xl'} margin={'10'} > Public Key </Text>
+                        <Input placeholder="Enter encoded public key" onChange={handleEncodedPublicKeyChange} />
                         <Button margin={'10'} colorScheme={'blue'} onClick={handleRequestSubmit}>Request Credential</Button>
                     </Container>
                 )

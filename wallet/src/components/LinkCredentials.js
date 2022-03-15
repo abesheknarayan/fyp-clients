@@ -16,8 +16,7 @@ function LinkCredentials() {
 ;
     const getUnusedKeyPairsFromIndexedDb = useCallback(async () => {
         try {
-            let result = await db.keypairs.toArray();
-            console.log(result);
+            let result = await db.keypairs.where({used:0}).toArray();
             setKeyPairs(result);
         }
         catch (err) {
@@ -40,7 +39,7 @@ function LinkCredentials() {
                 <Table>
                     <Thead>
                         <Tr>
-                            <Th> Credential </Th>
+                            <Th> Requested Credential Name </Th>
                         </Tr>
                     </Thead>
                     <Tbody>

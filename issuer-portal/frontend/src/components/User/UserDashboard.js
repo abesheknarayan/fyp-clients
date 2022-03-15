@@ -8,8 +8,6 @@ import Navbar from './Navbar';
 function UserDashboard() {
     const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
     const { user, isLoggedin } = useContext(userContext);
-    console.log("rendering user dashboard")
-    console.log(isIssuerLoggedin, isUserLoggedin, isLoggedin)
     
     if(isIssuerLoggedin) 
         return <Redirect to="/issuer/dashboard" />
