@@ -88,6 +88,7 @@ function IssueCredential() {
             // metadata
             newCredential['name'] = credential.definition.name;
             newCredential['version'] = credential.definition.version;
+            newCredential['definitionId'] = credential.definition.definitionId;
             newCredential.attributes = []
             // encrypting credential's value using user Public key
             for (let [key, value] of Object.entries(credentialFillableDetails)) {
@@ -102,6 +103,7 @@ function IssueCredential() {
                 })
             }
             // store credential in db 
+            console.log(newCredential);
             await axiosInstance.post('/credential/save',{
                 requestId: credential.requestId,
                 credentialDefinitionDBId: credentialDefinitionDBId,

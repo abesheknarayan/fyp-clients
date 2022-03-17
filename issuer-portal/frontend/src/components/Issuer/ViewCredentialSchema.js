@@ -1,5 +1,5 @@
-import { Box, Text } from "@chakra-ui/react";
-import { useContext } from "react";
+import { Box, Text, Table, Tbody, Tr, Th, Td } from "@chakra-ui/react";
+import React, { useContext } from "react";
 import { Redirect } from 'react-router-dom';
 import { commonContext } from "../../context/CommonContext";
 
@@ -16,19 +16,58 @@ function ViewCredentialSchema(props) {
 
     return (
         <Box border='1px' borderRadius='lg' borderColor='gray' padding='3' margin='3' width='max-content'>
-            <Box padding='1' display='flex'> <Text> Schema Name: </Text> <Text paddingLeft='1' color='tomato'> {props.value.name} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Schema Version: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.version} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Schema Id: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.id} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Creator Address: </Text> <Text paddingLeft='1' color='tomato'  >  {props.value.creator_address} </Text> </Box>
-            <Text> Attributes  </Text>
-            {
-                attributes.map((attribute, index) => (
-                    <div key={index}>
-                        <Box padding='1' display='flex'> <Text> Attribute {index + 1}:  </Text> <Text paddingLeft='1' color='tomato'> {attribute.value}  </Text> </Box>
-                        <Box padding='1' display='flex'> <Text> Type:  </Text> <Text paddingLeft='1' color='tomato'> {attribute.type}  </Text> </Box>
-                    </div>
-                ))
-            }
+            <Table>
+                <Tbody>
+                    <Tr>
+                        <Th>
+                            Schema Name
+                        </Th>
+                        <Td>
+                            {props.value.name}
+                        </Td>
+                    </Tr>
+                    <Tr>
+                        <Th>
+                            Schema Version
+                        </Th>
+                        <Td>
+                            {props.value.version}
+                        </Td>
+                    </Tr>
+                    <Tr>
+                        <Th>
+                            Schema Id
+                        </Th>
+                        <Td>
+                            {props.value.id}
+                        </Td>
+                    </Tr>
+                    <Tr>
+                        <Th>
+                            Creator Address
+                        </Th>
+                        <Td>
+                            {props.value.creator_address}
+                        </Td>
+                    </Tr>
+                    {
+                        attributes.map((attribute, index) => {
+                            return (
+                                <React.Fragment>
+                                    <Tr>
+                                        <Th>
+                                            Attribute {index + 1}
+                                        </Th>
+                                        <Td>
+                                            {attribute.value}
+                                        </Td>
+                                    </Tr>
+                                </React.Fragment>
+                            )
+                        })
+                    }
+                </Tbody>
+            </Table>
         </Box>
     )
 

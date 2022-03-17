@@ -1,5 +1,5 @@
-import { Box, Text } from "@chakra-ui/react";
-import { useContext } from "react";
+import { Box, Tbody, Text, Th, Td, Tr, Table } from "@chakra-ui/react";
+import React, { useContext } from "react";
 import { Redirect } from 'react-router-dom';
 import { commonContext } from "../../context/CommonContext";
 
@@ -12,17 +12,89 @@ function ViewCredentialDefinition(props) {
     if (!isIssuerLoggedin) return <Redirect to="/auth/issuer/login" />
 
     return (
-        <Box border='1px' borderRadius='lg' borderColor='gray' padding='3' margin='3' width='max-content'>
-            <Box padding='1' display='flex'> <Text> Defintion Name: </Text> <Text paddingLeft='1' color='tomato'> {props.value.name} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Defintion Version: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.version} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Definition Id: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.id} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Signature Curve: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.V_Key.curve} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Verification Key X: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.V_Key.x} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Verification Key Y: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.V_Key.y} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Schema Id: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.credSchema_id} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Creator Address: </Text> <Text paddingLeft='1' color='tomato'  >  {props.value.issuer_address} </Text> </Box>
-            <Box padding='1' display='flex'> <Text> Revocatable: </Text> <Text paddingLeft='1' color='tomato' >  {props.value.is_revocatable?"Yes":"No"} </Text> </Box>
-        </Box>
+        <React.Fragment>
+            <Box border='1px' borderRadius='lg' borderColor='gray' padding='3' margin='3' width='max-content'>
+
+                <Table>
+                    <Tbody>
+                        <Tr>
+                            <Th>
+                                Credential Name
+                            </Th>
+                            <Td>
+                                {props.value.name}
+                            </Td>
+                        </Tr>
+                        <Tr>
+                            <Th>
+                                Credential Version
+                            </Th>
+                            <Td>
+                                {props.value.version}
+                            </Td>
+                        </Tr>
+                        <Tr>
+                            <Th>
+                                Definition Id
+                            </Th>
+                            <Td>
+                                {props.value.id}
+                            </Td>
+                        </Tr>
+                        <Tr>
+                            <Th>
+                                Schema Id
+                            </Th>
+                            <Td>
+                                {props.value.credSchema_id}
+                            </Td>
+                        </Tr>
+                        <Tr>
+                            <Th>
+                                Signature Curve
+                            </Th>
+                            <Td>
+                                {props.value.V_Key.curve}
+                            </Td>
+                        </Tr>
+                        <Tr>
+                            <Th>
+                                Verification Key X
+                            </Th>
+                            <Td>
+                                {props.value.V_Key.x}
+                            </Td>
+                        </Tr>
+                        <Tr>
+                            <Th>
+                                Verification Key Y
+                            </Th>
+                            <Td>
+                                {props.value.V_Key.y}
+                            </Td>
+                        </Tr>
+
+                        <Tr>
+                            <Th>
+                                Creator Address
+                            </Th>
+                            <Td>
+                                {props.value.issuer_address}
+                            </Td>
+                        </Tr>
+                        <Tr>
+                            <Th>
+                                Revocatable
+                            </Th>
+                            <Td>
+                                {props.value.is_revocatable ? "Yes" : "No"}
+                            </Td>
+                        </Tr>
+                    </Tbody>
+                </Table>
+            </Box>
+
+        </React.Fragment>
     )
 
 }

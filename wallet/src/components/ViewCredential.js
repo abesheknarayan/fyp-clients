@@ -20,6 +20,7 @@ function ViewCredential() {
             let cred = {};
             cred.name = credential[0].credential.name;
             cred.version = credential[0].credential.version;
+            cred.definitionId = credential[0].credential.definitionId;
             cred.attributes = []
             for (let index in credential[0].credential.attributes) {
                 cred.attributes.push(credential[0].credential.attributes[index])
@@ -50,6 +51,10 @@ function ViewCredential() {
                                     <Tr>
                                         <Th>Version</Th>
                                         <Td>{credential.version}</Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Th>Definition Id </Th>
+                                        <Td>{credential.definitionId}</Td>
                                     </Tr>
                                 </Tbody>
                             </Table>

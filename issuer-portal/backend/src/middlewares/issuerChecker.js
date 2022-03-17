@@ -23,6 +23,7 @@ const checkIssuer = async (req,res,next) => {
     }
     catch (err) {
         console.error(err);
+        return res.status(400).send("Invalid Cookie");
     }
 }
 

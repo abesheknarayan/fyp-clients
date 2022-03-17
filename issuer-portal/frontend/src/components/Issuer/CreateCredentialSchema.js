@@ -76,7 +76,7 @@ function CreateCredentialSchema() {
                         padding="10"
                         spacing={4}
                         w={'full'}
-                        maxW={'md'}
+                        maxW={'lg'}
                         rounded={'xl'}
                         boxShadow={'lg'}
                         p={6}

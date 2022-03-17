@@ -151,6 +151,7 @@ const getDetailsForIssuance = async (req, res) => {
             version: 1,
             isRevocatable: 1,
             schemaId: 1,
+            definitionId: 1,
             privateKey: 1,
             publicKey: 1, // remove this after testing
         })

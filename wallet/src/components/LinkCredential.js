@@ -46,6 +46,7 @@ function LinkCredential() {
             let decryptedCredential = {};
             decryptedCredential.name = finalCredential.name;
             decryptedCredential.version = finalCredential.version;
+            decryptedCredential.definitionId = finalCredential.definitionId;
             decryptedCredential.attributes = {};
             for(let [key,value] of Object.entries(finalCredential.attributes))
             {
@@ -106,7 +107,7 @@ function LinkCredential() {
                         </React.Fragment>
                     )
                 }
-
+                <FormLabel>Encoded Credential</FormLabel>
                 <Textarea onInput={handleCredentialChange} placeholder="Paste ur credential here">
                 </Textarea>
                 <Button margin={2} onClick={handleSaveCredential}>

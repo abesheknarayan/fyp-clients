@@ -20,8 +20,6 @@ function UserLogin() {
     const [password, setPassword] = useState('');
     const { saveUser,isLoggedin } = useContext(userContext);
     const { isIssuerLoggedin,isUserLoggedin } = useContext(commonContext);
-    console.log("in user login!!");
-    console.log(isIssuerLoggedin,isLoggedin);
 
     if(isIssuerLoggedin) return <Redirect to="/issuer/dashboard" />
 
