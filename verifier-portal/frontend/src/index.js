@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { ChakraProvider, Spinner } from '@chakra-ui/react';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Suspense fallback={Spinner}>
+    <ChakraProvider>
+      <App />
+    </ChakraProvider>
+  </Suspense>,
   document.getElementById('root')
 );
 

@@ -11,7 +11,7 @@ import { commonContext } from "./CommonContext";
 export const userContext = createContext();
 
 function UserContextProvider(props) {
-    const { isIssuerLoggedin, setUserLoginStatus,userData,isUserLoggedin } = useContext(commonContext);
+    const { isVerifierLoggedin, setUserLoginStatus,userData,isUserLoggedin } = useContext(commonContext);
     const [user, setUser] = useState(userData);
     const [isLoggedin, setisLoggedin] = useState(isUserLoggedin);
     console.log('in user context')
@@ -40,12 +40,12 @@ function UserContextProvider(props) {
     }, []);
 
     useEffect(() => {
-        if (!isIssuerLoggedin) fetchUser();
+        if (!isVerifierLoggedin) fetchUser();
         return function cleanup() {
             setUserLoginStatus(false,user);
             setisLoggedin(false);
         }
-    }, [fetchUser,isIssuerLoggedin]);
+    }, [fetchUser,isVerifierLoggedin]);
 
     const saveUser = (user) => {
         // console.log("saveUser called")
