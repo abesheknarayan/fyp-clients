@@ -12,7 +12,6 @@ function ViewCredentialSchema(props) {
     if (!isIssuerLoggedin) return <Redirect to="/auth/issuer/login" />
 
     let attributes = JSON.parse(props.value.attributes);
-    console.log(attributes);
 
     return (
         <Box border='1px' borderRadius='lg' borderColor='gray' padding='3' margin='3' width='max-content'>
@@ -53,7 +52,7 @@ function ViewCredentialSchema(props) {
                     {
                         attributes.map((attribute, index) => {
                             return (
-                                <React.Fragment>
+                                <React.Fragment key={index}>
                                     <Tr>
                                         <Th>
                                             Attribute {index + 1}

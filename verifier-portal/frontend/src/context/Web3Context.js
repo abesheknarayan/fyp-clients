@@ -24,7 +24,7 @@ function Web3ContextProvider(props) {
                 contract.abi,
                 deployedNetwork && deployedNetwork.address
             );
-            console.log(accounts)
+            
             setInstance(instance);
             setWeb3(web3Instance);
             setAccounts(accounts);

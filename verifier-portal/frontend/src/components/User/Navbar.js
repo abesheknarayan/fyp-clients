@@ -58,7 +58,7 @@ export default function WithSubnavigation() {
                         textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
                         fontFamily={'heading'}
                         color={useColorModeValue('gray.800', 'white')}>
-                        Issuer Portal
+                        Verifier Portal
                     </Text>
 
                     <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
@@ -244,7 +244,7 @@ const NAV_ITEMS = [
     },
     {
         label: 'Verification Templates',
-        href: '/user/verificationtemplate/view/all'
+        href: '/user/verificationtemplates/view'
     },
    
 ];

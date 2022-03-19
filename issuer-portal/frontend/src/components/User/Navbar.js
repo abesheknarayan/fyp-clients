@@ -77,7 +77,7 @@ export default function WithSubnavigation() {
                         fontWeight={600}
                         color={'white'}
                         bg={'green.400'}
-                        onClick={() => {history.push("/auth/issuer/logout")}}
+                        onClick={() => { history.push("/auth/issuer/logout") }}
                         _hover={{
                             bg: 'green.300',
                         }}>
