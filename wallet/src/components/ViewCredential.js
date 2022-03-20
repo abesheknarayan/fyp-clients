@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Navbar from './Navbar';
 import { db } from "../utils/db";
-import { Container, Heading, Tbody, Thead, Table, Th, Td, Tr } from "@chakra-ui/react";
+import { Container, Heading, Tbody, Thead, Table, Th, Td, Tr, Button } from "@chakra-ui/react";
 
 function ViewCredential() {
     const path = useLocation();
@@ -34,6 +34,11 @@ function ViewCredential() {
     useEffect(() => {
         getCredentialFromIndexedDb();
     }, [])
+
+    const handleCreateVerifiableCredential = () => {
+        history.push(`/verifiablecredential/create/${credentialId}`)
+    }
+
     return (
         <React.Fragment>
             <Navbar />
@@ -81,6 +86,9 @@ function ViewCredential() {
                                     }
                                 </Tbody>
                             </Table>
+                            <Button onClick={handleCreateVerifiableCredential} m='5' colorScheme={'green'}>
+                                Create Verifiable Credential 
+                            </Button>
                         </React.Fragment>
                     )
                 }

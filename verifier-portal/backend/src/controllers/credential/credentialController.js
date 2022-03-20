@@ -5,12 +5,13 @@ import VerificationTemplate from "../../models/verificationTemplate.js";
 
 const createVerificationTemplate = async (req, res) => {
     try {
-        let { definitionId, requiredAttributes,templateName } = req.body;
+        let { definitionId, requiredAttributes,templateName,credentialDefinitionPublicKey } = req.body;
         console.log(definitionId, requiredAttributes);
         await VerificationTemplate.create({
             templateName: templateName,
             definitionId: definitionId,
             requiredAttributes: requiredAttributes,
+            credentialDefinitionPublicKey: credentialDefinitionPublicKey,
         })
         return res.status(200);
     }

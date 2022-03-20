@@ -88,6 +88,7 @@ function CreateVerificationTemplate() {
             await axiosInstance.post('/credential/verificationtemplate/create',{
                 templateName: verificationTemplateName,
                 definitionId: credentialDefinition.id,
+                credentialDefinitionPublicKey: credentialDefinition.V_Key,
                 requiredAttributes: selectedAttributesList,
             })
             history.push('/verificationtemplate/view/all');

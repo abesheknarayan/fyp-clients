@@ -5,6 +5,7 @@ import ViewAllCredentials from "./ViewAllCredentials";
 import LinkCredentials from "./LinkCredentials";
 import LinkCredential from "./LinkCredential";
 import ViewCredential from "./ViewCredential";
+import CreateVerifiableCredential from "./CreateVerifiableCredential";
 
 export {
     Dashboard,
@@ -14,4 +15,5 @@ export {
     LinkCredentials,
     LinkCredential,
     ViewCredential,
+    CreateVerifiableCredential,
 }
