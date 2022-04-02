@@ -1,3 +1,5 @@
+import * as pr from 'prime-functions';
+
 
 /*
 Get some key material to use as input to the deriveKey method.
@@ -88,6 +90,61 @@ const decrypt = async(privateKey,cipherText) => {
 
 }
 
+const mult = (a, b, m) => {
+    return (a * b) % m;
+}
+
+// computes a^(-1) mod m
+const inverse = (a, m) => {
+    return modpow(a, phi(m) - 1, m);
+}
+
+
+// computes euler totient value
+const phi = (a) => {
+    return pr.totient(a);
+}
+
+// computes a^b mod m for prime m
+const modpow = (a, b, m) => {
+    a %= m
+    let res = 1
+    while (b > 0) {
+        if (b & 1) {
+            res = mult(res, a, m)
+            b--;
+        }
+        b /= 2
+        a = mult(a, a, m)
+    }
+    return res;
+}
+
+// generates a random number in [1,limit)
+const generateRandomNumber = (limit) => {   
+    return Math.floor(Math.random()*(limit-1) + 1);
+}
+
+const generateProof = (privateVal,publicVal,p) => {
+    // compute x*r1, y--> public , y^r2 , r1,r2    
+    let r1 = generateRandomNumber(p);
+    let r2 = generateRandomNumber(p);
+    console.log(publicVal)
+    console.log(modpow(publicVal,privateVal,p));
+    return {
+        r1r2: mult(r1,r2,phi(Number(p))),
+        p1: mult(r1,Number(privateVal),phi(Number(p))),
+        p2: modpow(Number(publicVal),r2,Number(p))
+    }
+}
+
+// const checkRevocation = (accumulatorValue,revocationProof,p) => {
+//     let lval = modpow(accumulatorValue,revocationProof.r1r2,p)
+//     let {p1,p2} = revocationProof;
+//     let rval = modpow(p2,p1,p)
+//     console.log(lval,rval);
+// }
+
 
 export {
     getKeyMaterial,
@@ -95,4 +152,6 @@ export {
     ConvertArrayBuffertoHexString,
     ConvertHexStringtoArrayBuffer,
     decrypt,
+    generateProof,
+    // checkRevocation,
 }

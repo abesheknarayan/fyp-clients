@@ -5,16 +5,19 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@truffle/contract": "^4.5.3",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.7",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "prime-functions": "^1.2.2",
+    "web3": "^1.7.1"
   },
   "scripts": {
-    "start": "nodemon --experimental-modules ./src/app.js",
+    "start": "nodemon --experimental-modules --experimental-json-modules ./src/app.js",
     "seed": "node ./src/seed/seed.js"
   }
 }

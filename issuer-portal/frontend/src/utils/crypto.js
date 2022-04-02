@@ -158,7 +158,7 @@ const phi = (a) => {
 
 // computes a^b mod m for prime m
 const modpow = (a, b, m) => {
-    console.log(a,b,m)
+    console.log(a, b, m)
     a %= m
     let res = 1
     while (b > 0) {
@@ -210,12 +210,12 @@ const initRevocationRegistry = () => {
 
 
 const addNewCredential = (publicAccumulatorValue, publicWitnessList, revocationId, primeNumber) => {
-    let newAccumulatorValue = modpow(Number(publicAccumulatorValue),revocationId,Number(primeNumber));
+    let newAccumulatorValue = modpow(Number(publicAccumulatorValue), revocationId, Number(primeNumber));
     let newPublicWitnessList = []
-    publicWitnessList.forEach((publicWitness)=>{
+    publicWitnessList.forEach((publicWitness) => {
         console.log(typeof publicWitness)
         console.log(Number(publicWitness))
-        newPublicWitnessList.push(modpow(Number(publicWitness),revocationId,Number(primeNumber)))
+        newPublicWitnessList.push(modpow(Number(publicWitness), revocationId, Number(primeNumber)))
     })
     // public witness for newly added credential is same as old public accumulator value
     newPublicWitnessList.push(Number(publicAccumulatorValue))
@@ -223,6 +223,30 @@ const addNewCredential = (publicAccumulatorValue, publicWitnessList, revocationI
     return {
         publicAccumulatorValue: newAccumulatorValue,
         publicWitnessList: newPublicWitnessList,
+    }
+}
+
+const revocateCredential = (oldAccumulator, oldPublicWitnessList, privateWitness, index) => {
+    let oldAccumulatorValue = oldAccumulator.accumulator_value;
+    let prime = oldAccumulator.prime_number;
+
+    let accumulatorValue = modpow(oldAccumulatorValue, inverse(privateWitness, phi(prime)), prime);
+
+    let publicWitnessList = []
+    oldPublicWitnessList.forEach((publicWitness, indx) => {
+        if (index == indx) {
+            publicWitnessList.push(1);
+
+        }
+        else {
+            let newPublicWitness = modpow(publicWitness, inverse(privateWitness, phi(prime)), prime);
+            publicWitnessList.push(newPublicWitness);
+        }
+    })
+
+    return {
+        accumulatorValue: accumulatorValue,
+        publicWitnessList: publicWitnessList,
     }
 }
 
@@ -239,4 +263,5 @@ export {
     ConvertHexStringtoArrayBuffer,
     initRevocationRegistry,
     addNewCredential,
+    revocateCredential,
 }

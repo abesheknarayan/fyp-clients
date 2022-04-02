@@ -67,7 +67,7 @@ const getTotalIssuedCredentials = async (req, res) => {
         console.log(req.params)
         let request = await CredentialRequest.findById(req.params.id);
         let credentialDefinitionId = request.definitionId;
-        let totalCredentialIssued = await Credential.count({credentialDefinitionId: credentialDefinitionId})
+        let totalCredentialIssued = await Credential.count({ credentialDefinitionId: credentialDefinitionId })
         return res.status(200).json({
             totalNumber: totalCredentialIssued
         })
@@ -277,6 +277,41 @@ const getUserCredential = async (req, res) => {
     }
 }
 
+const getAllIssuedCredentials = async (req, res) => {
+    try {
+        let issuedCredentials = await Credential.find({}, { credential: 1, userId: 1 });
+        let result = []
+        for (let i = 0; i < issuedCredentials.length; i++) {
+            let cred = issuedCredentials[i];
+            let user = await User.findById(cred.userId);
+            console.log(user);
+            result.push({
+                credentialId: cred.id,
+                credentialName: cred.credential.name,
+                credentialDefinitionId: cred.credential.definitionId,
+                publicWitnessIndex: cred.credential.publicWitnessIndex,
+                userAadhar: user.aadharId,
+            })
+        }
+        console.log(result);
+        return res.status(200).json(result);
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+
+const deleteCredential = async(req,res) => {
+    try{
+        await Credential.findByIdAndDelete(req.body.credentialId);
+        return res.status(200);
+    }
+    catch(err)
+    {
+        console.error(err);
+    }
+}
+
 export {
     createCredentialDefiniton,
     createCredentialSchema,
@@ -290,4 +325,6 @@ export {
     getAllUserCredentialsIssued,
     getUserCredential,
     getTotalIssuedCredentials,
+    getAllIssuedCredentials,
+    deleteCredential,
 }

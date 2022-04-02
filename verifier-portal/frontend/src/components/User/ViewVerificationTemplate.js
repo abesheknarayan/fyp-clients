@@ -99,7 +99,16 @@ function ViewVerificationTemplateUser() {
                 }
             }
 
-            return returnToast(true);
+            console.log("sending to backend")
+            // check revocation proof
+            let revocationStatus = await axiosInstance.post(`/credential/revocation/${verifiableCredentialParsed.definitionId}`,{
+                revocationProof: verifiableCredentialParsed.revocationProof,
+            });
+
+            console.log(revocationStatus);
+
+
+            return returnToast(revocationStatus.data);
         }
         catch (err) {
             console.log(err);

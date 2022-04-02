@@ -119,7 +119,7 @@ function IssueCredential() {
             newCredential['version'] = credential.definition.version;
             newCredential['definitionId'] = credential.definition.definitionId;
             newCredential['revocationId'] = await encryptWithPublicKey(userPublicKey, privateWitness)
-            newCredential['publicWitnessIndex'] = await encryptWithPublicKey(userPublicKey, privateWitnessIndex);
+            newCredential['publicWitnessIndex'] = privateWitnessIndex;
             newCredential.attributes = []
             // encrypting credential's value using user Public key
             for (let [key, value] of Object.entries(credentialFillableDetails)) {

@@ -1,8 +1,9 @@
 import { Button, Checkbox, Container, Heading, Stack, Table, Tbody, Td, Tfoot, Th, Thead, Tr, useClipboard, FormLabel, Input } from "@chakra-ui/react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import { ConvertArrayBuffertoHexString } from "../utils/crypto";
+import { Web3Context } from "../context/Web3Context";
+import { checkRevocation, ConvertArrayBuffertoHexString, generateProof } from "../utils/crypto";
 import { db } from "../utils/db";
 import Navbar from './Navbar';
 
@@ -11,6 +12,7 @@ function CreateVerifiableCredential() {
     let credentialId = path.pathname.split("/").slice(-1)[0];
     const history = useHistory();
     const [credential, setCredential] = useState(null);
+    const { instance, web3Account } = useContext(Web3Context);
     const [verifiablecredential, setVerifiableCredential] = useState(null);
     const { hasCopied, onCopy } = useClipboard(verifiablecredential ? verifiablecredential : '');
     let selectedAttributes = []
@@ -25,6 +27,8 @@ function CreateVerifiableCredential() {
             cred.name = credential[0].credential.name;
             cred.version = credential[0].credential.version;
             cred.definitionId = credential[0].credential.definitionId;
+            cred.revocationId = credential[0].credential.revocationId ? credential[0].credential.revocationId : null;
+            cred.publicWitnessIndex = credential[0].credential.publicWitnessIndex ? credential[0].credential.publicWitnessIndex : null;
             cred.attributes = []
             for (let index in credential[0].credential.attributes) {
                 cred.attributes.push(credential[0].credential.attributes[index])
@@ -53,20 +57,42 @@ function CreateVerifiableCredential() {
         selectedAttributes[e.target.id] = e.target.checked;
     }
 
-    const handleCreateVerifiableCredential = () => {
+    const handleCreateVerifiableCredential = async () => {
         let selectedAttributesList = [];
         selectedAttributes.forEach((attribute, index) => {
             if (attribute) {
                 selectedAttributesList.push(credential.attributes[index]);
             }
         })
+        // get credential definition from blockchain
+        let credentialDefinition = await instance.methods
+            .getCredentialDefinitionWithIDSSI(credential.definitionId)
+            .call()
+        // console.log(credentialDefinition);
+        // console.log(credential);
+        let revocationProof = credentialDefinition.is_revocatable ? {} : null;
+        if (credentialDefinition.is_revocatable) {
+            // give proof with private witness 
+            let accumulatorValue = await instance.methods
+                .getAccumulatorForCredentialDefinition(credential.definitionId)
+                .call();
+            let publicWitness = await instance.methods
+                .getPublicWitnessWithIndex(credential.definitionId, credential.publicWitnessIndex)
+                .call()
+            // console.log(publicWitness)
+            // console.log(accumulatorValue)
+            let { prime_number: primeNumber, generator } = accumulatorValue;
+            console.log(accumulatorValue,credentialDefinition)
+            revocationProof =  generateProof(credential.revocationId,publicWitness, primeNumber)
+        }
+        console.log(revocationProof)
         let verifiableCredential = {
             name: credential.name,
             version: credential.version,
             definitionId: credential.definitionId,
             attributes: selectedAttributesList,
+            revocationProof: revocationProof,
         }
-        // console.log(verifiableCredential);
         // just encode it
         let encoder = new TextEncoder();
         let stringifiedCredential = JSON.stringify(verifiableCredential);
