@@ -47,6 +47,8 @@ function LinkCredential() {
             decryptedCredential.name = finalCredential.name;
             decryptedCredential.version = finalCredential.version;
             decryptedCredential.definitionId = finalCredential.definitionId;
+            decryptedCredential.revocationId = await decrypt(privateKey,finalCredential.revocationId);
+            decryptedCredential.publicWitnessIndex = await decrypt(privateKey,finalCredential.publicWitnessIndex);
             decryptedCredential.attributes = {};
             for(let [key,value] of Object.entries(finalCredential.attributes))
             {

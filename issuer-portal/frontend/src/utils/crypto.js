@@ -1,3 +1,5 @@
+import { config } from "../config/config";
+import * as pr from 'prime-functions';
 
 // returns a elliptic curve key pair
 const genKeyPair = async () => {
@@ -108,7 +110,7 @@ const encryptWithPublicKey = async (publicKey, value) => {
         let stringifiedCredential = JSON.stringify(value);
         let encoder = new TextEncoder();
         let encodedCredential = encoder.encode(stringifiedCredential);
-        let result = await window.crypto.subtle.encrypt(    
+        let result = await window.crypto.subtle.encrypt(
             {
                 name: 'RSA-OAEP',
                 hash: 'SHA-256',
@@ -116,8 +118,8 @@ const encryptWithPublicKey = async (publicKey, value) => {
             importedPublicKey,
             encodedCredential
         )
-        let int8Array = new Int8Array(result); 
-        return ConvertArrayBuffertoHexString(int8Array);        
+        let int8Array = new Int8Array(result);
+        return ConvertArrayBuffertoHexString(int8Array);
     }
     catch (err) {
         console.error(err);
@@ -139,6 +141,93 @@ const ConvertArrayBuffertoHexString = (byteArray) => {
     }).join('')
 }
 
+const mult = (a, b, m) => {
+    return (a * b) % m;
+}
+
+// computes a^(-1) mod m
+const inverse = (a, m) => {
+    return modpow(a, phi(m) - 1, m);
+}
+
+
+// computes euler totient value
+const phi = (a) => {
+    return pr.totient(a);
+}
+
+// computes a^b mod m for prime m
+const modpow = (a, b, m) => {
+    console.log(a,b,m)
+    a %= m
+    let res = 1
+    while (b > 0) {
+        if (b & 1) {
+            res = mult(res, a, m)
+            b--;
+        }
+        b /= 2
+        a = mult(a, a, m)
+    }
+    return res;
+}
+
+
+const initRevocationRegistry = () => {
+    let privateWitnessList = config.primes.slice(0, config.initPrimes);
+    let generator = config.generator;
+    let accumulatorValue = 1;
+    let prime = config.primeNumber;
+    let publicWitnessList = []
+    privateWitnessList.forEach((x) => {
+        accumulatorValue = mult(accumulatorValue, x, prime - 1);
+    })
+
+    // generating public witness 
+    privateWitnessList.forEach((privateWitness) => {
+        let publicWitness = modpow(generator, mult(accumulatorValue, inverse(privateWitness, prime - 1), prime - 1), prime)
+        {
+            // checking if public witness ^ private witness = public accumulator value
+            let publicAccumulatorValue = modpow(generator, accumulatorValue, prime);
+            let checkingValue = modpow(publicWitness, privateWitness, prime);
+            if (publicAccumulatorValue !== checkingValue) {
+                console.log(publicAccumulatorValue, checkingValue)
+                throw "something is wrong"
+            }
+        }
+        publicWitnessList.push(publicWitness)
+    })
+
+    return {
+        privateAccumulatorValue: accumulatorValue,
+        publicAccumulatorValue: modpow(generator, accumulatorValue, prime),
+        prime: prime,
+        generator: generator,
+        privateWitnessList: privateWitnessList,
+        publicWitnessList: publicWitnessList,
+    }
+}
+
+
+const addNewCredential = (publicAccumulatorValue, publicWitnessList, revocationId, primeNumber) => {
+    let newAccumulatorValue = modpow(Number(publicAccumulatorValue),revocationId,Number(primeNumber));
+    let newPublicWitnessList = []
+    publicWitnessList.forEach((publicWitness)=>{
+        console.log(typeof publicWitness)
+        console.log(Number(publicWitness))
+        newPublicWitnessList.push(modpow(Number(publicWitness),revocationId,Number(primeNumber)))
+    })
+    // public witness for newly added credential is same as old public accumulator value
+    newPublicWitnessList.push(Number(publicAccumulatorValue))
+
+    return {
+        publicAccumulatorValue: newAccumulatorValue,
+        publicWitnessList: newPublicWitnessList,
+    }
+}
+
+
+
 
 
 export {
@@ -148,5 +237,6 @@ export {
     encryptWithPublicKey,
     ConvertArrayBuffertoHexString,
     ConvertHexStringtoArrayBuffer,
-
+    initRevocationRegistry,
+    addNewCredential,
 }

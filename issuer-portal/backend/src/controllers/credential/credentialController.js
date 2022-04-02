@@ -1,6 +1,7 @@
 import CredentialDefinition from '../../models/credentialDefintion.js'
 import CredentialRequest from '../../models/credentialRequest.js'
 import CredentialSchema from '../../models/credentialSchema.js'
+import RevocationRegistry from '../../models/revocationRegistry.js'
 import Credential from '../../models/credential.js'
 import User from '../../models/user.js'
 import mongoose from 'mongoose'
@@ -12,7 +13,7 @@ const createCredentialDefiniton = async (req, res) => {
             return res.status(401).send("access denied")
         }
         let { body } = req;
-        await CredentialDefinition.create({
+        let credentialDefinition = await CredentialDefinition.create({
             name: body.name,
             definitionId: body.credentialId,
             version: body.version,
@@ -22,6 +23,16 @@ const createCredentialDefiniton = async (req, res) => {
             publicKey: body.publicKey,
             privateKey: body.privateKey
         })
+
+        // await RevocationRegistry.create({
+        //     credentialDefinitionId: credentialDefinition.id,
+        //     primeNumber: body.prime,
+        //     generator: body.generator,
+        //     publicAccumulatorValue: body.publicAccumulatorValue,
+        //     privateAccumulatorValue: body.privateAccumulatorValue,
+        //     privateWitnessList: body.privateWitnessList,
+        //     publicWitnessList: body.publicWitnessList,
+        // })
     }
     catch (err) {
         console.error(err);
@@ -44,6 +55,21 @@ const createCredentialSchema = async (req, res) => {
             version: body.version,
             creatorAddress: body.creatorAddress,
             attributes: body.attributes
+        })
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+
+const getTotalIssuedCredentials = async (req, res) => {
+    try {
+        console.log(req.params)
+        let request = await CredentialRequest.findById(req.params.id);
+        let credentialDefinitionId = request.definitionId;
+        let totalCredentialIssued = await Credential.count({credentialDefinitionId: credentialDefinitionId})
+        return res.status(200).json({
+            totalNumber: totalCredentialIssued
         })
     }
     catch (err) {
@@ -185,16 +211,20 @@ const saveCredential = async (req, res) => {
           1. change request status to done
           2. store credential in db
         */
-        let { requestId, credentialDefinitionDBId, credential } = req.body;
+        let { requestId, credential, publicAccumulatorValue, publicWitnessList } = req.body;
         let credentialRequest = await CredentialRequest.findById(requestId);
-        credentialRequest.status = 'issued';
-        await credentialRequest.save();
         let { userID } = req;
         await Credential.create({
-            credentialDefinitionId: mongoose.Types.ObjectId(credentialDefinitionDBId),
+            credentialDefinitionId: mongoose.Types.ObjectId(credentialRequest.definitionId),
             userId: mongoose.Types.ObjectId(credentialRequest.userId),
             credential: credential
         })
+        // let revocationRegistry = await RevocationRegistry.findOne({ credentialDefinitionId: mongoose.Types.ObjectId(credentialRequest.definitionId) });
+        // revocationRegistry.publicAccumulatorValue = publicAccumulatorValue;
+        // revocationRegistry.publicWitnessList = publicWitnessList;
+        // await revocationRegistry.save();
+        credentialRequest.status = 'issued';
+        await credentialRequest.save();
         return res.status(200);
     }
     catch (err) {
@@ -227,24 +257,22 @@ const getAllUserCredentialsIssued = async (req, res) => {
     }
 }
 
-const getUserCredential = async (req,res) => {
-    try{
+const getUserCredential = async (req, res) => {
+    try {
         console.info("getting user credential")
         // find if userID is owner
-        let {userID} = req;
-        let {id} = req.params;
+        let { userID } = req;
+        let { id } = req.params;
         let credential = await Credential.findById(id);
-        if(!credential) {
+        if (!credential) {
             return res.status(400).send("No credential found");
         }
-        if(credential.userId != (userID))
-        {
+        if (credential.userId != (userID)) {
             return res.status(400).send("Invalid request");
         }
         return res.status(200).json(credential);
     }
-    catch(err)
-    {
+    catch (err) {
         console.error(err);
     }
 }
@@ -261,4 +289,5 @@ export {
     getAllUserCredentialRequests,
     getAllUserCredentialsIssued,
     getUserCredential,
+    getTotalIssuedCredentials,
 }

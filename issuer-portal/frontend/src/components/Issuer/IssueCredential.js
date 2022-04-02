@@ -1,9 +1,11 @@
 import { Container, FormLabel, Tbody, Table, Tr, Td, Text, Heading, Flex, Stack, FormControl, Input, Button } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
+import { config } from "../../config/config";
 import { commonContext } from "../../context/CommonContext";
+import { Web3Context } from "../../context/Web3Context";
 import { axiosInstance } from "../../utils/axios";
-import { Sign, VerifySignature, ConvertArrayBuffertoHexString, ConvertHexStringtoArrayBuffer, encryptWithPublicKey } from "../../utils/crypto";
+import { Sign, VerifySignature, ConvertArrayBuffertoHexString, ConvertHexStringtoArrayBuffer, encryptWithPublicKey, addNewCredential } from "../../utils/crypto";
 import Navbar from './Navbar';
 
 
@@ -39,16 +41,17 @@ function IssueCredential() {
     const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
     const [credential, setCredential] = useState(null);
     const [credentialFillableDetails, setCredentialFillableDetails] = useState({});
+    const { instance, web3Account } = useContext(Web3Context);
     const path = useLocation();
     const history = useHistory();
-    let credentialDefinitionDBId = path.pathname.split("/").slice(-1)[0];
-    console.log(credentialDefinitionDBId)
+    let credentialRequestId = path.pathname.split("/").slice(-1)[0];
+    console.log(credentialRequestId)
     console.log("rendering issue credentials component");
 
 
     const getCredentialDetials = useCallback(async () => {
         try {
-            let resp = await axiosInstance.get(`/credential/issue/${credentialDefinitionDBId}`);
+            let resp = await axiosInstance.get(`/credential/issue/${credentialRequestId}`);
             console.log(resp.data);
             setCredential(resp.data);
         }
@@ -74,21 +77,49 @@ function IssueCredential() {
         let oldDetails = credentialFillableDetails;
         oldDetails[`${name}`] = value;
         setCredentialFillableDetails(oldDetails);
-
+        
     }
-
+    
     // big shit , sign each attribute and store it in db
-    // TODO: Encrypt the whole data with pub key of requested user
-    const handleIssueCredential = async () => {
-        try {
+    /*
+    TODO:
+    - get a private witness (prime number) and add it to credential
+    - change accumulator value
+    - add private and public witness to issuer db
+    - add public witness to blockchain and update accumulator value
+    */
+   const handleIssueCredential = async () => {
+       try {
+           // get data witness and accumulator data from blockchain
+        
+           let witnessData = await instance.methods
+               .getAllPublicWitnesses(credential.definition.definitionId)
+               .call();
+           // console.log(witnessData);
+        
+           let accumulatorData = await instance.methods
+               .getAccumulatorForCredentialDefinition(credential.definition.definitionId)
+               .call()
+           // console.log(accumulatorData);
+        
+           let oldPublicWitnessList = witnessData;
+           let oldPublicAccumulatorValue = accumulatorData.accumulator_value;
+           let primeNumber = accumulatorData.prime_number;
+           
+            let privateWitnessIndex = witnessData.length;
+            let privateWitness = config.primes[privateWitnessIndex];
+            console.log(privateWitness);
             console.log(credentialFillableDetails);
             const { publicKey, privateKey } = credential.definition;
             const { userPublicKey } = credential;
             let newCredential = {};
             // metadata
+            // TODO: get prime and update accumulator value in db and 
             newCredential['name'] = credential.definition.name;
             newCredential['version'] = credential.definition.version;
             newCredential['definitionId'] = credential.definition.definitionId;
+            newCredential['revocationId'] = await encryptWithPublicKey(userPublicKey, privateWitness)
+            newCredential['publicWitnessIndex'] = await encryptWithPublicKey(userPublicKey, privateWitnessIndex);
             newCredential.attributes = []
             // encrypting credential's value using user Public key
             for (let [key, value] of Object.entries(credentialFillableDetails)) {
@@ -104,14 +135,31 @@ function IssueCredential() {
             }
             // store credential in db 
             console.log(newCredential);
-            await axiosInstance.post('/credential/save',{
+            // change all public witnesses,accumulator value and store it in blockchain
+
+
+            console.log(oldPublicWitnessList,oldPublicAccumulatorValue)
+
+            // update accumulator value
+            let { publicWitnessList, publicAccumulatorValue } = addNewCredential(oldPublicAccumulatorValue, oldPublicWitnessList, privateWitness, primeNumber)
+
+            console.log(publicWitnessList,publicAccumulatorValue);
+
+            // change in blockchain
+            await instance.methods
+                .updateRevocationRegistryOnCredentialIssuance(credential.definition.definitionId, publicWitnessList, publicAccumulatorValue)
+                .send({ from: web3Account });
+
+            await axiosInstance.post('/credential/save', {
                 requestId: credential.requestId,
-                credentialDefinitionDBId: credentialDefinitionDBId,
+                credentialRequestId: credentialRequestId,
                 credential: newCredential,
+                publicAccumulatorValue: publicAccumulatorValue,
+                publicWitnessList: publicWitnessList,
             })
+
         }
-        catch(err)
-        {
+        catch (err) {
             console.error(err);
         }
     }

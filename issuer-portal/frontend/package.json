@@ -15,6 +15,7 @@
     "crypto-browserify": "^3.12.0",
     "elliptic": "^6.5.4",
     "framer-motion": "4.1.17",
+    "prime-functions": "^1.2.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "5.2.1",

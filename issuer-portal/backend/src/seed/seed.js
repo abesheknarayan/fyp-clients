@@ -8,7 +8,7 @@ import { createUser } from '../controllers/user/userController.js';
 
 database()
 
-let seedIssuer = async () => {
+const seedIssuer = async () => {
     try {
         console.log("creating dummy issuer");
         let user = await createIssuer("govt", "password");
@@ -23,7 +23,7 @@ let seedIssuer = async () => {
 
 await seedIssuer()
 
-let seedUser = async () => {
+const seedUser = async () => {
     try {
         console.log("creating dummy User");
         await createUser("abeshek","password","12345675665645")

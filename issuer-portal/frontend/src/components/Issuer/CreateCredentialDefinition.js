@@ -15,7 +15,7 @@ import {
 
 import { Web3Context } from "../../context/Web3Context";
 import { commonContext } from "../../context/CommonContext";
-import { genKeyPair } from '../../utils/crypto'
+import { genKeyPair, initRevocationRegistry } from '../../utils/crypto'
 import { axiosInstance } from "../../utils/axios";
 
 function CreateCredentialDefintion() {
@@ -30,19 +30,19 @@ function CreateCredentialDefintion() {
     const [isRevocatable, setIsRevocatable] = useState(false);
 
     useEffect(() => {
-        if(!isUserLoggedin && isIssuerLoggedin) generateKeyPair();
+        if (!isUserLoggedin && isIssuerLoggedin) generateKeyPair();
     }, [])
 
-    const generateKeyPair = useCallback(async()=>{
+    const generateKeyPair = useCallback(async () => {
         try {
             let keyPair = await genKeyPair();
-            let formattedPublicKey = await window.crypto.subtle.exportKey('jwk',keyPair.publicKey);
-            let formattedPrivateKey = await window.crypto.subtle.exportKey('jwk',keyPair.privateKey);
-            console.log(formattedPublicKey,formattedPrivateKey)
+            let formattedPublicKey = await window.crypto.subtle.exportKey('jwk', keyPair.publicKey);
+            let formattedPrivateKey = await window.crypto.subtle.exportKey('jwk', keyPair.privateKey);
+            console.log(formattedPublicKey, formattedPrivateKey)
             setDefinitionSigningKey(formattedPrivateKey);
             setDefinitionVerificationKey(formattedPublicKey);
-        }  
-        catch(err){
+        }
+        catch (err) {
             console.error(err);
         }
     })
@@ -78,25 +78,53 @@ function CreateCredentialDefintion() {
         try {
             // create some random primes
             // get credential_definition id from response 
-            console.log(definitionVerificationKey.e,typeof definitionVerificationKey.n)
-            let resp = await instance.methods
-                .createCredentialDefinitionSSI(definitionName, definitonVersion,{curve:definitionVerificationKey.crv,x:definitionVerificationKey.x,y:definitionVerificationKey.y}, (schemaId), isRevocatable)
-                .send({ from: web3Account })
-            console.log(resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id);
+            console.log(definitionVerificationKey)
+            if (isRevocatable == false) {
+                let resp = await instance.methods
+                    .createCredentialDefinitionSSI(definitionName, definitonVersion, { curve: definitionVerificationKey.crv, x: definitionVerificationKey.x, y: definitionVerificationKey.y }, (schemaId), isRevocatable)
+                    .send({ from: web3Account })
+                console.log(resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id);
 
-            let definitionId = resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id;
-            console.log(definitionId);
-            await axiosInstance.post('/issuer/credentialdefinition/create',{
-                name:  definitionName,
-                credentialId: definitionId,
-                version: definitonVersion,
-                issuerAddress: web3Account,
-                schemaId: schemaId,
-                isRevocatable: isRevocatable,
-                publicKey: definitionVerificationKey,
-                privateKey: definitionSigningKey
-            })
-            // store (cred def id,key pair) tuple in mongodb for further use
+                let definitionId = resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id;
+                console.log(definitionId);
+                await axiosInstance.post('/issuer/credentialdefinition/create', {
+                    name: definitionName,
+                    credentialId: definitionId,
+                    version: definitonVersion,
+                    issuerAddress: web3Account,
+                    schemaId: schemaId,
+                    isRevocatable: isRevocatable,
+                    publicKey: definitionVerificationKey,
+                    privateKey: definitionSigningKey
+                })
+                // store (cred def id,key pair) tuple in mongodb for further use
+            }
+            else {
+                let { generator, publicWitnessList, prime, privateAccumulatorValue, publicAccumulatorValue, privateWitnessList } = initRevocationRegistry();
+                let resp = await instance.methods
+                    .createCredentialDefinitionSSIWithRevocation(definitionName, definitonVersion, { curve: definitionVerificationKey.crv, x: definitionVerificationKey.x, y: definitionVerificationKey.y }, (schemaId), isRevocatable, publicWitnessList, generator, prime, publicAccumulatorValue)
+                    .send({from: web3Account})
+                console.log(resp);
+                console.log(resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id);
+
+                let definitionId = resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id;
+                console.log(definitionId);
+
+                await axiosInstance.post('/issuer/credentialdefinition/create', {
+                    name: definitionName,
+                    credentialId: definitionId,
+                    version: definitonVersion,
+                    issuerAddress: web3Account,
+                    schemaId: schemaId,
+                    isRevocatable: isRevocatable,
+                    publicKey: definitionVerificationKey,
+                    privateKey: definitionSigningKey,
+                    prime: prime,
+                    generator: generator,
+                    publicAccumulatorValue: publicAccumulatorValue,
+                    publicWitnessList: publicWitnessList,
+                })
+            }
 
         }
         catch (err) {

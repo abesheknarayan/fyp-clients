@@ -18,13 +18,17 @@ function ViewCredential() {
                 return history.push('/dashboard');
             }
             let cred = {};
+            
             cred.name = credential[0].credential.name;
             cred.version = credential[0].credential.version;
             cred.definitionId = credential[0].credential.definitionId;
+            cred.revocationId = credential[0].credential.revocationId?credential[0].credential.revocationId:null;
+            cred.publicWitnessIndex = credential[0].credential.publicWitnessIndex?credential[0].credential.publicWitnessIndex:null;
             cred.attributes = []
             for (let index in credential[0].credential.attributes) {
                 cred.attributes.push(credential[0].credential.attributes[index])
             }
+            console.log(cred);
             setCredential(cred);
         }
         catch (err) {
@@ -60,6 +64,14 @@ function ViewCredential() {
                                     <Tr>
                                         <Th>Definition Id </Th>
                                         <Td>{credential.definitionId}</Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Th>Revocation Id </Th>
+                                        <Td>{credential.revocationId?credential.revocationId:'NULL'}</Td>
+                                    </Tr>
+                                    <Tr>
+                                        <Th>Public Witness Index </Th>
+                                        <Td>{credential.publicWitnessIndex?credential.publicWitnessIndex:'NULL'}</Td>
                                     </Tr>
                                 </Tbody>
                             </Table>
