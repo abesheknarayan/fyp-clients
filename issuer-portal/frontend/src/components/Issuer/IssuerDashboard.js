@@ -5,11 +5,22 @@ import { issuerContext } from "../../context/IssuerContext";
 import { Web3Context } from "../../context/Web3Context";
 import Navbar from './Navbar'
 
+import {
+    Container,
+    Heading,
+    Table,
+    Tbody,
+    Tr,
+    Td,
+    Th,
+
+} from '@chakra-ui/react';
+
 function IssuerDashboard() {
     const { isLoggedin, issuer } = useContext(issuerContext);
-    const {isIssuerLoggedin,isUserLoggedin} = useContext(commonContext);
-    const {web3Account} = useContext(Web3Context)
-    console.log(isIssuerLoggedin,isUserLoggedin);
+    const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
+    const { web3Account } = useContext(Web3Context)
+    console.log(isIssuerLoggedin, isUserLoggedin);
     console.log(issuer, isLoggedin)
     console.log('rendering')
 
@@ -20,9 +31,36 @@ function IssuerDashboard() {
     return (
         <React.Fragment>
             <Navbar></Navbar>
-            <h1> Issuer dashboard  </h1>
-            <h2> Welcome {issuer.username} </h2>
-            <h2> Issuer {web3Account} </h2>
+            <Container centerContent>
+                <Heading
+                    fontWeight={600}
+                    margin='5'
+                    fontSize={{ base: 'xl', sm: '4xl', md: '5xl' }}
+                    lineHeight={'110%'}>
+                    Issuer Dashboard <br />
+
+                </Heading>
+                <Table>
+                    <Tbody>
+                        <Tr>
+                            <Th>
+                                Username
+                            </Th>
+                            <Td>
+                                {issuer.username}
+                            </Td>
+                        </Tr>
+                        <Tr>
+                            <Th>
+                                Web3 Address
+                            </Th>
+                            <Td>
+                                {web3Account}
+                            </Td>
+                        </Tr>
+                    </Tbody>
+                </Table>
+            </Container>
         </React.Fragment>
     )
 }

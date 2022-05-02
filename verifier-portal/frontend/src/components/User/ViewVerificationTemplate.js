@@ -43,11 +43,11 @@ function ViewVerificationTemplateUser() {
         setVerifiableCredential(e.target.value);
     }
 
-    const returnToast = (result) => {
+    const returnToast = (result,msg) => {
         if (!result) {
             console.log('here')
             toast({
-                title: 'Error in Verification',
+                title: `Error in Verification: ${msg}`,
                 status: 'error',
                 isClosable: 'true',
                 duration: 9000
@@ -85,17 +85,17 @@ function ViewVerificationTemplateUser() {
             let verifiableCredentialParsed = JSON.parse(stringifiedCredential);
             console.log(verifiableCredentialParsed);
             if (verificationTemplate.requiredAttributes.length !== verifiableCredentialParsed.attributes.length) {
-                return returnToast(false);
+                return returnToast(false,"Verifiable Credential's attributes does not match with Verification template");
             }
             for (let i = 0; i < verifiableCredentialParsed.attributes.length; i++) {
                 if (verificationTemplate.requiredAttributes[i].value !== verifiableCredentialParsed.attributes[i].attributeName) {
-                    return returnToast(false);
+                    return returnToast(false,"Attribute Names differ");
                 }
                 // verify signature
                 let { value, signature } = verifiableCredentialParsed.attributes[i];
                 let result = verifySignature(publicKeyJWK,value,signature);
                 if(!result) {
-                    returnToast(false);
+                    returnToast(false,"Signature Verification Failed");
                 }
             }
 
@@ -107,8 +107,12 @@ function ViewVerificationTemplateUser() {
 
             console.log(revocationStatus);
 
+            if(!revocationStatus.data) {
+                return returnToast(false,"Revocation Proof Failed")
+            }
 
-            return returnToast(revocationStatus.data);
+
+            return returnToast(revocationStatus.data,"Verification Successfull");
         }
         catch (err) {
             console.log(err);

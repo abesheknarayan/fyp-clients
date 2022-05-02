@@ -1,3 +1,4 @@
+import { Container, Heading } from "@chakra-ui/react";
 import React, { useContext } from "react"
 import { Redirect } from "react-router-dom";
 import { commonContext } from "../../context/CommonContext";
@@ -18,8 +19,23 @@ function UserDashboard() {
     return (
         <React.Fragment>
             <Navbar />
-            <h1> User Dashboard Page </h1>
-            <h2> Welcome {user.aadharID} </h2>
+            <Container centerContent>
+                <Heading
+                    fontWeight={600}
+                    margin='5'
+                    fontSize={{ base: 'xl', sm: '4xl', md: '5xl' }}
+                    lineHeight={'110%'}>
+                    User Dashboard <br />
+                </Heading>
+                <Heading
+                    fontWeight={100}
+                    margin='5'
+                    fontSize={{ base: 'xl', sm: '4xl', md: 'xl' }}
+                    lineHeight={'110%'}>
+                    Aadhar ID : {user.aadharID} <br />
+                </Heading>
+                
+            </Container>
         </React.Fragment>
     )
 }
