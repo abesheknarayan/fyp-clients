@@ -13,7 +13,6 @@ function ViewCredential() {
     const getCredentialFromIndexedDb = useCallback(async () => {
         try {
             let credential = await db.credentials.where('id').equals(Number(credentialId)).toArray();
-            console.log(credential);
             if (credential.length != 1) {
                 return history.push('/dashboard');
             }
@@ -28,7 +27,6 @@ function ViewCredential() {
             for (let index in credential[0].credential.attributes) {
                 cred.attributes.push(credential[0].credential.attributes[index])
             }
-            console.log(cred);
             setCredential(cred);
         }
         catch (err) {
@@ -88,7 +86,7 @@ function ViewCredential() {
                                     {
                                         credential.attributes.map((attribute, index) => {
                                             return (
-                                                <Tr >
+                                                <Tr key = {index} >
                                                     <Td>{attribute.attributeName}</Td>
                                                     <Td>{attribute.value}</Td>
                                                     <Td maxW={'lg'}>{attribute.signature}</Td>

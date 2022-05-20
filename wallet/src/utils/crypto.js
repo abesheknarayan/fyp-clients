@@ -129,8 +129,6 @@ const generateProof = (privateVal,publicVal,p) => {
     // compute x*r1, y--> public , y^r2 , r1,r2    
     let r1 = generateRandomNumber(p);
     let r2 = generateRandomNumber(p);
-    console.log(publicVal)
-    console.log(modpow(publicVal,privateVal,p));
     return {
         r1r2: mult(r1,r2,phi(Number(p))),
         p1: mult(r1,Number(privateVal),phi(Number(p))),
@@ -138,12 +136,6 @@ const generateProof = (privateVal,publicVal,p) => {
     }
 }
 
-// const checkRevocation = (accumulatorValue,revocationProof,p) => {
-//     let lval = modpow(accumulatorValue,revocationProof.r1r2,p)
-//     let {p1,p2} = revocationProof;
-//     let rval = modpow(p2,p1,p)
-//     console.log(lval,rval);
-// }
 
 
 export {

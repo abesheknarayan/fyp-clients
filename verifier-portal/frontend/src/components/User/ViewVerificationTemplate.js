@@ -20,7 +20,6 @@ function ViewVerificationTemplateUser() {
     const getVerificationTemplate = useCallback(async () => {
         try {
             let result = await axiosInstance.get(`user/verificationtemplate/${verificationTemplateId}`);
-            console.log(result);
             setVerificationTemplate(result.data);
         }
         catch (err) {
@@ -45,7 +44,6 @@ function ViewVerificationTemplateUser() {
 
     const returnToast = (result,msg) => {
         if (!result) {
-            console.log('here')
             toast({
                 title: `Error in Verification: ${msg}`,
                 status: 'error',
@@ -54,7 +52,6 @@ function ViewVerificationTemplateUser() {
             })
         }
         else {
-            console.log("here2")
             toast({
                 title: 'Verification successful',
                 status: 'success',
@@ -83,7 +80,6 @@ function ViewVerificationTemplateUser() {
             let verifiableCredentialBuffer = ConvertHexStringtoArrayBuffer(verifiableCredential);
             let stringifiedCredential = decoder.decode(verifiableCredentialBuffer);
             let verifiableCredentialParsed = JSON.parse(stringifiedCredential);
-            console.log(verifiableCredentialParsed);
             if (verificationTemplate.requiredAttributes.length !== verifiableCredentialParsed.attributes.length) {
                 return returnToast(false,"Verifiable Credential's attributes does not match with Verification template");
             }
@@ -99,13 +95,11 @@ function ViewVerificationTemplateUser() {
                 }
             }
 
-            console.log("sending to backend")
             // check revocation proof
             let revocationStatus = await axiosInstance.post(`/credential/revocation/${verifiableCredentialParsed.definitionId}`,{
                 revocationProof: verifiableCredentialParsed.revocationProof,
             });
 
-            console.log(revocationStatus);
 
             if(!revocationStatus.data) {
                 return returnToast(false,"Revocation Proof Failed")

@@ -38,13 +38,12 @@ function VerifierLogin() {
             })
             // successfull login
             if (res.data && res.data.userID) {
-                console.log("successfull login!!")
                 saveVerifier(res.data)
                 history.push("/verifier/dashboard")
             }
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 

@@ -30,8 +30,6 @@ function CreateCredential() {
         if (!(credentialName)) return;
         try {
             let key = await deriveKey();
-            console.log(key);
-            console.log(key.publicKey, key.privateKey);
             let stringifiedKey = JSON.stringify(key.publicKey);
             let encoder = new TextEncoder();
             let encodedKey = encoder.encode(stringifiedKey);

@@ -142,7 +142,7 @@ function CreateVerifiableCredential() {
                                 <Tr>
                                     <Th>Attribute</Th>
                                     <Th>Value</Th>
-                                    <Th>Select/Unselect</Th>
+                                    <Th>Select / Unselect</Th>
                                 </Tr>
                             </Thead>
                             <Tbody>

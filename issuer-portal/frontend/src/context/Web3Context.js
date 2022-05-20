@@ -15,7 +15,6 @@ function Web3ContextProvider(props) {
     const web3Fetch = async() => {
         try {
             // only needed for issuer side 
-            console.log("fetching user web3")
             const web3Instance = await getWeb3();
             const accounts = await web3Instance.eth.getAccounts();
             const networkId = await web3Instance.eth.net.getId();
@@ -24,7 +23,6 @@ function Web3ContextProvider(props) {
                 contract.abi,
                 deployedNetwork && deployedNetwork.address
             );
-            console.log(accounts)
             setInstance(instance);
             setWeb3(web3Instance);
             setAccounts(accounts);

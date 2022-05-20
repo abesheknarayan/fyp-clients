@@ -14,7 +14,6 @@ function ViewCredentialRequests() {
     const getAllCredentialRequests = useCallback(async () => {
         try {
             let resp = await axiosInstance.get("/credential/requests");
-            console.log(resp);
             setRequests(resp.data);
         }
         catch (err) {

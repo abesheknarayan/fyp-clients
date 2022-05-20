@@ -14,11 +14,11 @@ const createVerificationTemplate = async (req, res) => {
             requiredAttributes: requiredAttributes,
             credentialDefinitionPublicKey: credentialDefinitionPublicKey,
         })
-        return res.status(200);
+        return res.sendStatus(200);
     }
     catch (err) {
         console.error(err);
-        return res.status(500);
+        return res.sendStatus(500);
     }
 }
 

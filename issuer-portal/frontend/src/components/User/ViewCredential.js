@@ -7,9 +7,10 @@ import {
     Button,
     Input,
     FormLabel,
+    useToast,
 } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Redirect, useLocation } from "react-router-dom";
+import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { commonContext } from "../../context/CommonContext";
 import { axiosInstance } from "../../utils/axios";
 import { ConvertHexStringtoArrayBuffer } from "../../utils/crypto";
@@ -20,6 +21,8 @@ import Navbar from './Navbar'
 function ViewCredential() {
     const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
     const path = useLocation();
+    const toast = useToast()
+    const history = useHistory();
     const [credential, setCredential] = useState(null);
     const [encodedPublicKey,setEncodedPublicKey] = useState('');
     let credentialDefinitionDBId = path.pathname.split("/").slice(-1)[0];
@@ -44,6 +47,26 @@ function ViewCredential() {
         }
     }, [])
 
+    const returnToast = (result,msg) => {
+        console.log(result,msg)
+        if (!result) {
+            toast({
+                title: `Error in requesting credential: ${msg}`,
+                status: 'error',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+        else {
+            toast({
+                title: 'Successfully requested credential',
+                status: 'success',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+    }
+
     if (isIssuerLoggedin)
         return <Redirect to="/issuer/dashboard" />
 
@@ -62,11 +85,13 @@ function ViewCredential() {
                 definitionId: credentialDefinitionDBId,
                 publicKey: decodedPublicKeyObject,
             }); 
-
+            returnToast(true,'Credential requested')
+            history.push('/user/credentials/requested')
         }
         catch(err)
         {
             console.error(err);
+            return returnToast(false,`Credential Request failed: ${err}`)
         }
     }
 

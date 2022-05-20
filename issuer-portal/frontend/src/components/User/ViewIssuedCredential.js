@@ -13,7 +13,6 @@ function ViewIssuedCredential() {
 
     const path = useLocation();
     let credentialId = path.pathname.split("/").slice(-1)[0];
-    console.log("rendering", credentialId);
 
     const encodeCredential = (cred) => {
         let stringifiedCredential = JSON.stringify(cred);
@@ -27,7 +26,6 @@ function ViewIssuedCredential() {
     const fetchCredential = useCallback(async () => {
         try {
             let result = await axiosInstance.get(`/credential/issued/${credentialId}`)
-            console.log(result);
             setCredential(result.data);
         }
         catch (err) {

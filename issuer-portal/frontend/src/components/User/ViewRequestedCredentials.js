@@ -12,7 +12,6 @@ function ViewRequestedCredentials() {
     const getAllRequestedCredentials = useCallback(async () => {
         try {
             let result = await axiosInstance.get('/user/credential/requests');
-            console.log(result);
             setRequests(result.data);
         }
         catch (err) {

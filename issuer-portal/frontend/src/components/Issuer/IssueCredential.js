@@ -1,4 +1,4 @@
-import { Container, FormLabel, Tbody, Table, Tr, Td, Text, Heading, Flex, Stack, FormControl, Input, Button } from "@chakra-ui/react";
+import { Container, FormLabel, Tbody, Table, Tr, Td, Text, Heading, Flex, Stack, FormControl, Input, Button,useToast } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { config } from "../../config/config";
@@ -43,16 +43,14 @@ function IssueCredential() {
     const [credentialFillableDetails, setCredentialFillableDetails] = useState({});
     const { instance, web3Account } = useContext(Web3Context);
     const path = useLocation();
+    const toast = useToast()
     const history = useHistory();
     let credentialRequestId = path.pathname.split("/").slice(-1)[0];
-    console.log(credentialRequestId)
-    console.log("rendering issue credentials component");
 
 
     const getCredentialDetials = useCallback(async () => {
         try {
             let resp = await axiosInstance.get(`/credential/issue/${credentialRequestId}`);
-            console.log(resp.data);
             setCredential(resp.data);
         }
         catch (err) {
@@ -79,6 +77,25 @@ function IssueCredential() {
         setCredentialFillableDetails(oldDetails);
         
     }
+
+    const returnToast = (result,msg) => {
+        if (!result) {
+            toast({
+                title: `Error in issuing credential: ${msg}`,
+                status: 'error',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+        else {
+            toast({
+                title: 'Successfully issued credential',
+                status: 'success',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+    }
     
     // big shit , sign each attribute and store it in db
     /*
@@ -95,12 +112,10 @@ function IssueCredential() {
            let witnessData = await instance.methods
                .getAllPublicWitnesses(credential.definition.definitionId)
                .call();
-           // console.log(witnessData);
         
            let accumulatorData = await instance.methods
                .getAccumulatorForCredentialDefinition(credential.definition.definitionId)
                .call()
-           // console.log(accumulatorData);
         
            let oldPublicWitnessList = witnessData;
            let oldPublicAccumulatorValue = accumulatorData.accumulator_value;
@@ -108,8 +123,6 @@ function IssueCredential() {
            
             let privateWitnessIndex = witnessData.length;
             let privateWitness = config.primes[privateWitnessIndex];
-            console.log(privateWitness);
-            console.log(credentialFillableDetails);
             const { publicKey, privateKey } = credential.definition;
             const { userPublicKey } = credential;
             let newCredential = {};
@@ -134,16 +147,13 @@ function IssueCredential() {
                 })
             }
             // store credential in db 
-            console.log(newCredential);
             // change all public witnesses,accumulator value and store it in blockchain
 
 
-            console.log(oldPublicWitnessList,oldPublicAccumulatorValue)
 
             // update accumulator value
             let { publicWitnessList, publicAccumulatorValue } = addNewCredential(oldPublicAccumulatorValue, oldPublicWitnessList, privateWitness, primeNumber)
 
-            console.log(publicWitnessList,publicAccumulatorValue);
 
             // change in blockchain
             await instance.methods
@@ -157,10 +167,12 @@ function IssueCredential() {
                 publicAccumulatorValue: publicAccumulatorValue,
                 publicWitnessList: publicWitnessList,
             })
-
+            returnToast(true,'Sucessfully issued credential')
+            history.push('/credential/issued')
         }
         catch (err) {
             console.error(err);
+            returnToast(false,'Error in issuing credential')
         }
     }
 

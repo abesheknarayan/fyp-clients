@@ -4,7 +4,6 @@ import { verifierContext } from "../../context/VerifierContext";
 
 function VerifierLogout(){
     const { logout } = useContext(verifierContext)    
-    console.log("in issuer logout component")
     logout();
 
     return <Redirect to="/" />

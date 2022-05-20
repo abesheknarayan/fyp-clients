@@ -14,15 +14,12 @@ function UserContextProvider(props) {
     const { isIssuerLoggedin, setUserLoginStatus,userData,isUserLoggedin } = useContext(commonContext);
     const [user, setUser] = useState(userData);
     const [isLoggedin, setisLoggedin] = useState(isUserLoggedin);
-    console.log('in user context')
 
     const fetchUser = useCallback(async () => {
         try {
             // gets if user is already logged in using jwt
             // returns back jwt and user details
-            console.log("fetching user")
             let resp = await axiosInstance.get('/user/me');
-            console.log(resp);
             if (resp.data) {
                 setUserLoginStatus(true,resp.data);
                 setUser(resp.data);
@@ -35,7 +32,7 @@ function UserContextProvider(props) {
         } catch (error) {
             setUserLoginStatus(false,user);
             setisLoggedin(false);
-            console.log(error);
+            console.error(error);
         }
     }, []);
 
@@ -48,8 +45,6 @@ function UserContextProvider(props) {
     }, [fetchUser,isIssuerLoggedin]);
 
     const saveUser = (user) => {
-        // console.log("saveUser called")
-        // console.log(user)
         setUserLoginStatus(true,user);
         setUser(user);
         setisLoggedin(true);
@@ -57,7 +52,6 @@ function UserContextProvider(props) {
 
     const logout = async () => {
         try {
-            console.log('logging out user!')
             await axiosInstance.get("/auth/user/logout")
             setUserLoginStatus(false,null);
             setUser(null);

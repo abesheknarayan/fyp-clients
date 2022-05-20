@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import Navbar from './Navbar';
 import {
     Button, Container, Input,
@@ -10,6 +10,8 @@ import {
     Stack,
     Switch,
     Box,
+    useToast,
+    
 } from "@chakra-ui/react";
 
 
@@ -28,17 +30,37 @@ function CreateCredentialDefintion() {
     const [definitionSigningKey, setDefinitionSigningKey] = useState(null);
     const [schemaId, setSchemaId] = useState('');
     const [isRevocatable, setIsRevocatable] = useState(false);
+    const toast = useToast()
+    const history = useHistory()
 
     useEffect(() => {
         if (!isUserLoggedin && isIssuerLoggedin) generateKeyPair();
     }, [])
+
+    const returnToast = (result,msg) => {
+        if (!result) {
+            toast({
+                title: `Error in creating credential definition: ${msg}`,
+                status: 'error',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+        else {
+            toast({
+                title: 'Successfully created credential definition',
+                status: 'success',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+    }
 
     const generateKeyPair = useCallback(async () => {
         try {
             let keyPair = await genKeyPair();
             let formattedPublicKey = await window.crypto.subtle.exportKey('jwk', keyPair.publicKey);
             let formattedPrivateKey = await window.crypto.subtle.exportKey('jwk', keyPair.privateKey);
-            console.log(formattedPublicKey, formattedPrivateKey)
             setDefinitionSigningKey(formattedPrivateKey);
             setDefinitionVerificationKey(formattedPublicKey);
         }
@@ -60,10 +82,6 @@ function CreateCredentialDefintion() {
         setDefinitionVersion(e.target.value);
     }
 
-    // const handleVerificationKeyChange = (e) => {
-    //     setDefinitionVerificationKey(e.target.value)
-    // }
-
     const handleSchemaIdChange = (e) => {
         setSchemaId(e.target.value);
     }
@@ -78,15 +96,12 @@ function CreateCredentialDefintion() {
         try {
             // create some random primes
             // get credential_definition id from response 
-            console.log(definitionVerificationKey)
             if (isRevocatable == false) {
                 let resp = await instance.methods
                     .createCredentialDefinitionSSI(definitionName, definitonVersion, { curve: definitionVerificationKey.crv, x: definitionVerificationKey.x, y: definitionVerificationKey.y }, (schemaId), isRevocatable)
                     .send({ from: web3Account })
-                console.log(resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id);
 
                 let definitionId = resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id;
-                console.log(definitionId);
                 await axiosInstance.post('/issuer/credentialdefinition/create', {
                     name: definitionName,
                     credentialId: definitionId,
@@ -104,11 +119,8 @@ function CreateCredentialDefintion() {
                 let resp = await instance.methods
                     .createCredentialDefinitionSSIWithRevocation(definitionName, definitonVersion, { curve: definitionVerificationKey.crv, x: definitionVerificationKey.x, y: definitionVerificationKey.y }, (schemaId), isRevocatable, publicWitnessList, generator, prime, publicAccumulatorValue)
                     .send({from: web3Account})
-                console.log(resp);
-                console.log(resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id);
 
                 let definitionId = resp.events.SendCredentialDefinitionId.returnValues._credential_definition_id;
-                console.log(definitionId);
 
                 await axiosInstance.post('/issuer/credentialdefinition/create', {
                     name: definitionName,
@@ -125,11 +137,14 @@ function CreateCredentialDefintion() {
                     publicWitnessList: publicWitnessList,
                 })
             }
-
+            returnToast(true,"Sucessfully created credential definition")
+            history.push('/credentialdefinition/all')
         }
         catch (err) {
             console.error(err);
+            returnToast(false,err)
         }
+        
     }
 
     return (

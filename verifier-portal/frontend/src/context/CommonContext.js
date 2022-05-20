@@ -7,13 +7,11 @@ function CommonContextProvider(props) {
     const [verifierData,setVerifier] = useState(localStorage.getItem("verifier")?localStorage.getItem("verifier"):null);
     const [isUserLoggedin, setIsUserLoggedin] = useState(localStorage.getItem("userLoginStatus") ? true : false);
     const [userData,setUser] = useState(localStorage.getItem("user")?localStorage.getItem("user"):null);
-    console.log("in common context", isVerifierLoggedin, isUserLoggedin)
 
 
     const setVerifierLoginStatus = (val,verifier) => {
         setIsVerifierLoggedin(val)
         setVerifier(verifier)
-        console.log("setting issuer to localstorage",val,verifier);
         if (val) {
             localStorage.setItem("verifierLoginStatus", val);
             localStorage.setItem("verifier",verifier);

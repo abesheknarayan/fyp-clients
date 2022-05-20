@@ -20,7 +20,6 @@ function ViewVerificationTemplate() {
     const getVerificationTemplate = useCallback(async () => {
         try {
             let result = await axiosInstance.get(`credential/verificationtemplate/${verificationTemplateId}`);
-            console.log(result);
             setVerificationTemplate(result.data);
         }
         catch (err) {
@@ -33,7 +32,6 @@ function ViewVerificationTemplate() {
             let result = await instance.methods
                 .getCredentialDefinitionWithIDSSI(verificationTemplate.definitionId)
                 .call();
-            console.log(result);
             setCredentialDefinition(result);
         }
         catch (err) {

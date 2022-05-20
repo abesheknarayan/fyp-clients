@@ -1,21 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { db } from '../utils/db';
 import { ConvertArrayBuffertoHexString, ConvertHexStringtoArrayBuffer, decrypt, deriveKey } from '../utils/crypto';
 import Navbar from './Navbar';
-import { Container, Table, Tbody, Td, Tr, Textarea, Button, useClipboard, Stack, FormLabel, Input } from '@chakra-ui/react'
+import { Container, Table, Tbody, Td, Tr, Textarea, Button, useClipboard, Stack, FormLabel, Input, useTab, useToast } from '@chakra-ui/react'
 
 function LinkCredential() {
     const path = useLocation();
     let keyPairId = path.pathname.split("/").slice(-1)[0];
     const [keyPair, setKeyPair] = useState(null);
+    const toast = useToast()
+    const history = useHistory()
+    const [encodedPublicKey,setEncodedPublicKey] = useState(null)
     const [credential, setCredential] = useState(null);
-    const {hasCopied, onCopy} = useClipboard(keyPair?keyPair.publicKey:null);
+    const {hasCopied, onCopy} = useClipboard(keyPair?encodedPublicKey:null);
 
     const getCredentialFromIndexedDb = useCallback(async () => {
         try {
             let keypair = await db.keypairs.where("id").equals(Number(keyPairId)).toArray();
-            console.log(keypair);
             setKeyPair(keypair[0]);
         }
         catch (err) {
@@ -26,6 +28,31 @@ function LinkCredential() {
     useEffect(() => {
         getCredentialFromIndexedDb();
     }, [])
+
+    useEffect(() => {
+        if(keyPair)
+            setEncodedPublicKey(encodePublicKey(keyPair.publicKey))
+    },[keyPair])
+
+    const returnToast = (result,msg) => {
+        if (!result) {
+            toast({
+                title: `Error in linking credential: ${msg}`,
+                status: 'error',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+        else {
+            toast({
+                title: 'Successfully linked credential to key pair',
+                status: 'success',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+    }
+    
 
     const handleCredentialChange = (e) => {
         setCredential(e.target.value);
@@ -38,7 +65,6 @@ function LinkCredential() {
                 store it in indexed db
             */
             let privateKey = keyPair.privateKey;
-            console.log(privateKey);
             let decoder = new TextDecoder();
             let credentialBuffer = ConvertHexStringtoArrayBuffer(credential);
             let credentialObj = decoder.decode(credentialBuffer);
@@ -52,7 +78,6 @@ function LinkCredential() {
             decryptedCredential.attributes = {};
             for(let [key,value] of Object.entries(finalCredential.attributes))
             {
-                console.log(key);
                 let decryptedValue = await decrypt(privateKey,value.value);
                 decryptedCredential.attributes[`${key}`] = {
                     attributeName: value.attributeName,
@@ -60,7 +85,6 @@ function LinkCredential() {
                     signature: value.signature,
                 }
             }
-            console.log(decryptedCredential);
             await db.credentials.add({
                 keyPairId: keyPairId,
                 credential: decryptedCredential,
@@ -68,6 +92,8 @@ function LinkCredential() {
             let newKeyPair = keyPair;
             newKeyPair.used = true
             await db.keypairs.put(newKeyPair, keyPairId)
+            returnToast(true,'Sucessfully linked credential')
+            history.push('/credential/all')
         }
         catch (err) {
             console.error(err);

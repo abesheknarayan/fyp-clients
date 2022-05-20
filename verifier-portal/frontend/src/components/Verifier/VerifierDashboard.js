@@ -10,9 +10,6 @@ function VerifierDashboard() {
     const { isLoggedin, verifier } = useContext(verifierContext);
     const { isVerifierLoggedin, isUserLoggedin } = useContext(commonContext);
     const { web3Account } = useContext(Web3Context)
-    console.log(isVerifierLoggedin, isUserLoggedin);
-    console.log(verifier, isLoggedin)
-    console.log('rendering')
 
     if (isUserLoggedin) return <Redirect to="/user/dashboard" />
 

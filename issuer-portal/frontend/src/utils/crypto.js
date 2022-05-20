@@ -56,7 +56,6 @@ const importPublicKeyFromJWK = async (jwk) => {
 const Sign = async (encodedMessage, jwk) => {
     try {
         let importedPrivateKey = await importPrivateKeyFromJWK(jwk);
-        console.log(importedPrivateKey);
         let signature = await window.crypto.subtle.sign({
             name: 'ECDSA',
             hash: { name: 'SHA-256' }
@@ -64,7 +63,6 @@ const Sign = async (encodedMessage, jwk) => {
             importedPrivateKey,
             encodedMessage
         )
-        console.log(signature);
         // converting it into hex from Array of bytes
         let int8Array = new Int8Array(signature);
         let hexSignature = ConvertArrayBuffertoHexString(int8Array);
@@ -158,7 +156,6 @@ const phi = (a) => {
 
 // computes a^b mod m for prime m
 const modpow = (a, b, m) => {
-    console.log(a, b, m)
     a %= m
     let res = 1
     while (b > 0) {
@@ -191,7 +188,6 @@ const initRevocationRegistry = () => {
             let publicAccumulatorValue = modpow(generator, accumulatorValue, prime);
             let checkingValue = modpow(publicWitness, privateWitness, prime);
             if (publicAccumulatorValue !== checkingValue) {
-                console.log(publicAccumulatorValue, checkingValue)
                 throw "something is wrong"
             }
         }
@@ -213,8 +209,6 @@ const addNewCredential = (publicAccumulatorValue, publicWitnessList, revocationI
     let newAccumulatorValue = modpow(Number(publicAccumulatorValue), revocationId, Number(primeNumber));
     let newPublicWitnessList = []
     publicWitnessList.forEach((publicWitness) => {
-        console.log(typeof publicWitness)
-        console.log(Number(publicWitness))
         newPublicWitnessList.push(modpow(Number(publicWitness), revocationId, Number(primeNumber)))
     })
     // public witness for newly added credential is same as old public accumulator value

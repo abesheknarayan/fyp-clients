@@ -1,4 +1,4 @@
-import { Container, Table, Thead, Tbody, Tr, Th, Td, Button } from "@chakra-ui/react";
+import { Container, Table, Thead, Tbody, Tr, Th, Td, Button,Heading } from "@chakra-ui/react";
 import { commonContext } from "../../context/CommonContext";
 import { Redirect } from "react-router-dom";
 import React, { useCallback, useContext, useEffect, useState } from "react";
@@ -17,9 +17,7 @@ function ViewIssuedCredentialsIssuer() {
 
     const fetchAllIssuedCredentials = useCallback(async () => {
         try {
-            console.log("fetching all issued credentials")
             let res = await axiosInstance.get('/credential/issued/all');
-            console.log(res.data)
             setCredentials(res.data);
         }
         catch (err) {
@@ -45,25 +43,20 @@ function ViewIssuedCredentialsIssuer() {
         // 1. Delete from db
         // 2. Change accumulator and public witnesses
 
-        console.log(credentials[id]);
         let credentialDefinitionId = credentials[id].credentialDefinitionId;
 
         let oldAccumulatorValue = await instance.methods
             .getAccumulatorForCredentialDefinition(credentialDefinitionId)
             .call();
 
-        console.log(oldAccumulatorValue);
 
         let oldPublicWitnessList = await instance.methods
             .getAllPublicWitnesses(credentialDefinitionId)
             .call()
-        console.log(oldPublicWitnessList);
 
         let privateWitness = config.primes[credentials[id].publicWitnessIndex];
-        console.log(privateWitness);
         let { accumulatorValue, publicWitnessList } = revocateCredential(oldAccumulatorValue, oldPublicWitnessList, privateWitness, credentials[id].publicWitnessIndex)
 
-        console.log(accumulatorValue, publicWitnessList);
 
         await instance.methods
             .updateRevocationRegistryOnCredentialIssuance(credentialDefinitionId, publicWitnessList, accumulatorValue)
@@ -72,6 +65,7 @@ function ViewIssuedCredentialsIssuer() {
         await axiosInstance.post('/credential/delete', {
             credentialId: credentials[id].credentialId
         })
+        setCredentials([...credentials.splice(0, id), ...credentials.splice(id + 1)])
     }
 
 
@@ -79,30 +73,40 @@ function ViewIssuedCredentialsIssuer() {
         <React.Fragment>
             <Navbar />
             <Container>
-                <Table>
-                    <Thead>
-                        <Tr>
-                            <Th>Credential Name</Th>
-                            <Th>Aadhar Id</Th>
-                            <Th>Revocate Action</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {
-                            credentials && (
-                                credentials.map((cred, index) => {
-                                    return (
-                                        <Tr>
-                                            <Td>{cred.credentialName}</Td>
-                                            <Td>{cred.userAadhar}</Td>
-                                            <Td><Button id={index} onClick={handleRevocation} size='sm' colorScheme={'red'} >Revocate</Button></Td>
-                                        </Tr>
+                {
+                    credentials.length > 0 && (
+                        <Table>
+                            <Thead>
+                                <Tr>
+                                    <Th>Credential Name</Th>
+                                    <Th>Aadhar Id</Th>
+                                    <Th>Revocate Action</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {
+                                    credentials && (
+                                        credentials.map((cred, index) => {
+                                            return (
+                                                <Tr>
+                                                    <Td>{cred.credentialName}</Td>
+                                                    <Td>{cred.userAadhar}</Td>
+                                                    <Td><Button id={index} onClick={handleRevocation} size='sm' colorScheme={'red'} >Revocate</Button></Td>
+                                                </Tr>
+                                            )
+                                        })
                                     )
-                                })
-                            )
-                        }
-                    </Tbody>
-                </Table>
+                                }
+                            </Tbody>
+                        </Table>
+                    )
+                }
+                {
+                    !credentials.length > 0 && (
+                        <Heading size={'lg'} margin={'10'}>No Credentials Issued !!</Heading>
+                    )
+                }
+
             </Container>
         </React.Fragment>
     )

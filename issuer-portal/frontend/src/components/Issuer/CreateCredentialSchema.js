@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import {
     Button, Container, Input,
     Flex,
@@ -7,6 +7,7 @@ import {
     FormLabel,
     Heading,
     Stack,
+    useToast,
 } from "@chakra-ui/react";
 
 import { Web3Context } from "../../context/Web3Context";
@@ -21,6 +22,8 @@ function CreateCredentialSchema() {
     const [schemaVersion, setSchemaVersion] = useState('');
     const [attributes, setAttributes] = useState(null);
     const { instance, web3Account } = useContext(Web3Context);
+    const toast = useToast()
+    const history = useHistory()
 
 
     // not allowing simultaneous login
@@ -40,17 +43,34 @@ function CreateCredentialSchema() {
         setAttributes(val);
     }
 
+    const returnToast = (result,msg) => {
+        if (!result) {
+            toast({
+                title: `Error in creating credential schema: ${msg}`,
+                status: 'error',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+        else {
+            toast({
+                title: 'Successfully created credential schema',
+                status: 'success',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+    }
+
     const handleCreateSchema = async () => {
         if (!(schemaName.length && schemaVersion.length)) return
         try {
             let stringifiedAttributes = JSON.stringify(attributes);
-            console.log(stringifiedAttributes, typeof stringifiedAttributes)
             let resp = await instance.methods
                 .createCredentialSchemaSSI(schemaName, schemaVersion, stringifiedAttributes)
                 .send({ from: web3Account })
             
             let schemaId = resp.events.SendCredentialSchemaId.returnValues._credential_schema_id;
-            console.log(schemaId);
             await axiosInstance.post("/issuer/credentialschema/create",{
                 name: schemaName,
                 schemaId: schemaId,
@@ -58,6 +78,8 @@ function CreateCredentialSchema() {
                 creatorAddress: web3Account,
                 attributes: stringifiedAttributes
             })
+            returnToast(true,"Credential Schema created successfully!")
+            history.push('/credentialschema/all')
         }
         catch (err) {
             console.error(err);

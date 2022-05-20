@@ -23,16 +23,8 @@ const createCredentialDefiniton = async (req, res) => {
             publicKey: body.publicKey,
             privateKey: body.privateKey
         })
+        return res.sendStatus(200)
 
-        // await RevocationRegistry.create({
-        //     credentialDefinitionId: credentialDefinition.id,
-        //     primeNumber: body.prime,
-        //     generator: body.generator,
-        //     publicAccumulatorValue: body.publicAccumulatorValue,
-        //     privateAccumulatorValue: body.privateAccumulatorValue,
-        //     privateWitnessList: body.privateWitnessList,
-        //     publicWitnessList: body.publicWitnessList,
-        // })
     }
     catch (err) {
         console.error(err);
@@ -56,6 +48,8 @@ const createCredentialSchema = async (req, res) => {
             creatorAddress: body.creatorAddress,
             attributes: body.attributes
         })
+
+        return res.sendStatus(200)
     }
     catch (err) {
         console.error(err);
@@ -147,6 +141,7 @@ const requestCredential = async (req, res) => {
             publicKey: publicKey,
             status: "requested"
         })
+        return res.sendStatus(200)
     }
     catch (err) {
         console.error(err);
@@ -225,7 +220,7 @@ const saveCredential = async (req, res) => {
         // await revocationRegistry.save();
         credentialRequest.status = 'issued';
         await credentialRequest.save();
-        return res.status(200);
+        return res.sendStatus(200);
     }
     catch (err) {
         console.error(err);
@@ -304,7 +299,7 @@ const getAllIssuedCredentials = async (req, res) => {
 const deleteCredential = async(req,res) => {
     try{
         await Credential.findByIdAndDelete(req.body.credentialId);
-        return res.status(200);
+        return res.sendStatus(200);
     }
     catch(err)
     {

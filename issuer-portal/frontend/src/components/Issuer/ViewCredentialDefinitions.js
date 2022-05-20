@@ -13,8 +13,6 @@ function ViewCredentialDefinitions() {
     const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
     const [ownedDefinitions, setOwnedDefinitions] = useState([]);
 
-    console.log(isIssuerLoggedin, isUserLoggedin)
-    console.log(instance, web3Account)
 
     useEffect(() => {
         if (!isUserLoggedin && isIssuerLoggedin) getAllOwnedCredentialDefinitions();
@@ -25,9 +23,7 @@ function ViewCredentialDefinitions() {
 
     const getAllOwnedCredentialDefinitions = useCallback(async () => {
         try {
-            console.log(web3Account, "getting data from blockchain", instance)
             let result = await instance.methods.getAllOwnedCredentialDefinitions().call({ from: web3Account })
-            console.log(result);
             setOwnedDefinitions(result);
         }
         catch (err) {

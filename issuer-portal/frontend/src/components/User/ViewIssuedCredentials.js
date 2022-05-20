@@ -13,7 +13,6 @@ function ViewIssuedCredentials() {
     const getAllUserCredentials = useCallback(async () => {
         try {
             let result = await axiosInstance.get("/user/credential/all");
-            console.log(result);
             setCredentials(result.data);
         }
         catch (err) {

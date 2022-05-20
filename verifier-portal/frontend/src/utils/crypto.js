@@ -37,7 +37,6 @@ const verifySignature = async (publicKey, val, signature) => {
             ConvertHexStringtoArrayBuffer(signature),
             encodedData,
         )
-        console.log(result);
         return result;
     }
     catch (err) {

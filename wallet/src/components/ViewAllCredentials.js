@@ -12,7 +12,6 @@ function ViewAllCredentials() {
     const getAllCredentialsFromIndexedDB = useCallback(async () => {
         try {
             let result = await db.credentials.toArray();
-            console.log(result);
             setCredentials(result);
         }
         catch (err) {
@@ -46,7 +45,6 @@ function ViewAllCredentials() {
                             <Tbody>
                                 {
                                     credentials.map((cred, index) => {
-                                        console.log(cred);
                                         return (
                                             <Tr key={index}>
                                                 <Td>{cred.credential.name}</Td>

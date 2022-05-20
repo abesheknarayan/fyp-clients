@@ -20,9 +20,6 @@ function IssuerDashboard() {
     const { isLoggedin, issuer } = useContext(issuerContext);
     const { isIssuerLoggedin, isUserLoggedin } = useContext(commonContext);
     const { web3Account } = useContext(Web3Context)
-    console.log(isIssuerLoggedin, isUserLoggedin);
-    console.log(issuer, isLoggedin)
-    console.log('rendering')
 
     if (isUserLoggedin) return <Redirect to="/user/dashboard" />
 

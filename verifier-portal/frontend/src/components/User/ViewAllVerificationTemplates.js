@@ -12,7 +12,6 @@ function ViewAllVerificationTemplatesUser() {
 
     const getAllVerificationTemplates = useCallback(async () => {
         try {
-            console.log("here")
             let result = await axiosInstance.get("/user/verificationtemplate/all");
             setverificationTemplates(result.data);
         }

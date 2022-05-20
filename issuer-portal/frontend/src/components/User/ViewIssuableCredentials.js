@@ -20,8 +20,6 @@ function ViewIssuableCredentials() {
     const history = useHistory();
 
     const [credentials, setIssuableCredentials] = useState([]);
-    console.log("rendering user issuable credentials")
-    console.log(isIssuerLoggedin, isUserLoggedin)
 
     const fetchIssuableCredentials = useCallback(async () => {
         try {

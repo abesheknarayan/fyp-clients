@@ -36,13 +36,12 @@ function UserLogin() {
                 password: password
             })
             if (res.data && res.data.userID) {
-                console.log("successfull user login!!")
                 saveUser(res.data)
                 history.push("/user/dashboard")
             }
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 

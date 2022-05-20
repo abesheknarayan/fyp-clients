@@ -38,13 +38,12 @@ function IssuerLogin() {
             })
             // successfull login
             if (res.data && res.data.userID) {
-                console.log("successfull login!!")
                 saveIssuer(res.data)
                 history.push("/issuer/dashboard")
             }
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 

@@ -16,7 +16,6 @@ function ViewAllVerificationTemplates() {
 
     const getAllVerificationTemplates = useCallback(async () => {
         try {
-            console.log("here")
             let result = await axiosInstance.get("/credential/verificationtemplate/all");
             setverificationTemplates(result.data);
         }
@@ -45,7 +44,6 @@ function ViewAllVerificationTemplates() {
                     <Tbody>
                         {
                             verificationTemplates.map((template,index)=>{
-                                console.log(template)
                                 return (
                                     <Tr key={index}>
                                         <Td> {template.templateName} </Td>

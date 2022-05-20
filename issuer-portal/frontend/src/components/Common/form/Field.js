@@ -4,7 +4,6 @@ import { DeleteIcon } from '@chakra-ui/icons';
 
 function Field(props) {
     const [attributeName, setAttributeName] = useState(props.value ? props.value : '');
-    console.log("rendering field", attributeName);
 
     const handleAttributeNameChange = (e) => {
         setAttributeName(e.target.value);

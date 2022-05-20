@@ -1,4 +1,4 @@
-import { Button, Container, FormControl, FormLabel, Input, Stack, Table, Tbody, Tr, Th, Td, Heading, Checkbox } from "@chakra-ui/react";
+import { Button, Container, FormControl, FormLabel, Input, Stack, Table, Tbody, Tr, Th, Td, Heading, Checkbox, useToast } from "@chakra-ui/react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { commonContext } from "../../context/CommonContext";
@@ -15,6 +15,7 @@ function CreateVerificationTemplate() {
     const [verificationTemplateName,setVerificationTemplateName] = useState('')
     const [credentialDefinition, setCredentialDefinition] = useState(null);
     const [attributes, setAttributes] = useState([]);
+    const toast = useToast()
     const history = useHistory();
     let selectedAttributes = [];
 
@@ -24,7 +25,6 @@ function CreateVerificationTemplate() {
             let result = await instance.methods
                 .getCredentialSchemaWithIDSSI(schemaId)
                 .call();
-            console.log(result);
             let attributes = JSON.parse(result.attributes);
             setAttributes(attributes);
         }
@@ -58,7 +58,6 @@ function CreateVerificationTemplate() {
             let result = await instance.methods
                 .getCredentialDefinitionWithIDSSI(credentialDefinitionId)
                 .call()
-            console.log(result);
             setCredentialDefinition(result);
         }
         catch (err) {
@@ -74,6 +73,25 @@ function CreateVerificationTemplate() {
         setVerificationTemplateName(e.target.value);
     }
 
+    const returnToast = (result,msg) => {
+        if (!result) {
+            toast({
+                title: `Error in creating verification Template: ${msg}`,
+                status: 'error',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+        else {
+            toast({
+                title: 'Verification template created successfully',
+                status: 'success',
+                isClosable: 'true',
+                duration: 3000
+            })
+        }
+    }
+
     const handleVerificationTemplateCreate = async() => {
         try{
             // store verificatio template in db
@@ -84,14 +102,14 @@ function CreateVerificationTemplate() {
                     selectedAttributesList.push(attributes[index]);
                 }
             })
-            console.log(selectedAttributesList);
             await axiosInstance.post('/credential/verificationtemplate/create',{
                 templateName: verificationTemplateName,
                 definitionId: credentialDefinition.id,
                 credentialDefinitionPublicKey: credentialDefinition.V_Key,
                 requiredAttributes: selectedAttributesList,
             })
-            history.push('/verificationtemplate/view/all');
+            returnToast(true,'Verification Template created successfully')
+            history.push('/verifier/verificationtemplate/view/all');
         }
 
         catch(err)
@@ -153,7 +171,6 @@ function CreateVerificationTemplate() {
                         <Stack spacing={'5'} direction={'column'}>
                             {
                                 attributes.map((attribute, index) => {
-                                    console.log(attribute)
                                     return (
                                         <Checkbox id={index} key={index} onChange={handleAttributeCheck}>
                                             {attribute.value}
